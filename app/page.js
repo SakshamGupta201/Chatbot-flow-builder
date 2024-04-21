@@ -30,18 +30,7 @@ import Modal from "./component/Modal.js";
 // Key for local storage
 const flowKey = "flow-key";
 
-// Initial node setup
-const initialNodes = [
-  {
-    id: "1",
-    type: "textnode",
-    className: "textnode", // Assigning class name same as type
-    data: { label: "input nodes" },
-    position: { x: 250, y: 5 },
-  },
-];
-
-let id = 0;
+let id = 1;
 
 // Function for generating unique IDs for nodes
 const getId = () => `node_${id++}`;
@@ -77,17 +66,13 @@ const App = () => {
 
   // States and hooks setup
   const reactFlowWrapper = useRef(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [selectedElements, setSelectedElements] = useState([]);
   const [nodeName, setNodeName] = useState("");
 
   // Update nodes data when nodeName or selectedElements changes
-  useEffect(() => {
-    // Clear all localstorage when page is loaded
-    localStorage.clear();
-  }, []);
 
   useEffect(() => {
     if (selectedElements.length > 0) {
@@ -179,6 +164,12 @@ const App = () => {
     restoreFlow();
   }, [setNodes, setViewport]);
 
+  const onReset = useCallback(() => {
+    localStorage.clear();
+    setNodes([]);
+    setEdges([]);
+  }, []);
+
   // Handle edge connection
   const onConnect = useCallback(
     (params) => {
@@ -198,7 +189,7 @@ const App = () => {
 
   const onDrop = useCallback(
     (event) => {
-      debugger;
+      
       event.preventDefault();
 
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
@@ -228,6 +219,48 @@ const App = () => {
     },
     [reactFlowInstance]
   );
+  const runFlow = () => {
+    // Retrieve the flow data from local storage
+    const flowData = JSON.parse(localStorage.getItem(flowKey));
+  
+    // Check if flow data exists
+    if (flowData && flowData.nodes) {
+      // Iterate through each node in the flow data
+      flowData.nodes.forEach(node => {
+        console.log(`Node ID: ${node.id}`);
+        console.log(`Node Label: ${node.data.label}`);
+  
+        // Retrieve form values for the current node ID
+        const formDataKey = `${node.id}`;
+        const formData = JSON.parse(localStorage.getItem(formDataKey));
+        debugger;
+        // Log form values if they exist
+        if (formData) {
+          console.log("Form Data:");
+          // Check if formData is an array
+          if (Array.isArray(formData)) {
+            // If formData is an array, iterate over each form data object
+            formData.forEach(field => {
+              // Log each key-value pair in the form data object
+              Object.entries(field).forEach(([key, value]) => {
+                console.log(`- ${key}: ${value}`);
+              });
+            });
+          } else {
+            // If formData is not an array, log it directly
+            console.log(formData);
+          }
+        } else {
+          console.log("No form data found for this node.");
+        }
+  
+        console.log("------------------------------------");
+      });
+    } else {
+      console.log("No flow data found in local storage.");
+    }
+  };
+  
 
 
   const rfStyle = {
@@ -276,6 +309,23 @@ const App = () => {
             >
               restore flow
             </button>
+
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              onClick={onReset}
+            >
+              Rest flow
+            </button>
+
+            <hr>
+            </hr>
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              onClick={runFlow}
+            >
+              Run
+            </button>
+
           </Panel>
         </ReactFlow>
       </div>
