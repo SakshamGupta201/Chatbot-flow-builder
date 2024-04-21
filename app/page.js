@@ -24,6 +24,7 @@ import "reactflow/dist/base.css";
 import "../tailwind.config.js";
 import Sidebar from "./component/sidebar";
 import TextNode from "./component/TextNode";
+import Node2 from "./component/Node2";
 
 // Key for local storage
 const flowKey = "flow-key";
@@ -33,6 +34,7 @@ const initialNodes = [
   {
     id: "1",
     type: "textnode",
+    className: "textnode", // Assigning class name same as type
     data: { label: "input nodes" },
     position: { x: 250, y: 5 },
   },
@@ -48,6 +50,7 @@ const App = () => {
   const nodeTypes = useMemo(
     () => ({
       textnode: TextNode,
+      node2: Node2,
     }),
     []
   );
@@ -166,8 +169,10 @@ const App = () => {
   }, []);
 
   // Handle drop event to add a new node
+  
   const onDrop = useCallback(
     (event) => {
+      debugger;
       event.preventDefault();
 
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
@@ -181,11 +186,15 @@ const App = () => {
         x: event.clientX - reactFlowBounds.left,
         y: event.clientY - reactFlowBounds.top,
       });
+
       const newNode = {
         id: getId(),
         type,
         position,
-        data: { label: `${type}` },
+        data: {
+          label: `${type}`,
+        },
+        className: `${type}`, // Assigning class name same as type
       };
 
       console.log("Node created: ", newNode);
@@ -193,6 +202,7 @@ const App = () => {
     },
     [reactFlowInstance]
   );
+
 
   const rfStyle = {
     backgroundColor: "#ffffff",
