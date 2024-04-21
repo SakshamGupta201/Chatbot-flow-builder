@@ -25,6 +25,7 @@ import "../tailwind.config.js";
 import Sidebar from "./component/sidebar";
 import TextNode from "./component/TextNode";
 import Node2 from "./component/Node2";
+import Modal from "./component/Modal.js";
 
 // Key for local storage
 const flowKey = "flow-key";
@@ -45,6 +46,8 @@ let id = 0;
 // Function for generating unique IDs for nodes
 const getId = () => `node_${id++}`;
 
+
+
 const App = () => {
   // Define custom node types
   const nodeTypes = useMemo(
@@ -54,6 +57,23 @@ const App = () => {
     }),
     []
   );
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // State to store the clicked node
+  const [clickedNode, setClickedNode] = useState(null);
+
+  const handleNodeClick = (event, node) => {
+    setIsModalOpen(true);
+    setClickedNode(node);
+  };
+
+  // Function to close the modal
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setClickedNode(null);
+  };
+
 
   // States and hooks setup
   const reactFlowWrapper = useRef(null);
@@ -169,7 +189,7 @@ const App = () => {
   }, []);
 
   // Handle drop event to add a new node
-  
+
   const onDrop = useCallback(
     (event) => {
       debugger;
@@ -222,13 +242,13 @@ const App = () => {
           onDrop={onDrop}
           onDragOver={onDragOver}
           style={rfStyle}
-          onNodeClick={onNodeClick}
+          onNodeClick={handleNodeClick}
           onPaneClick={() => {
-            setSelectedElements([]); // Reset selected elements when clicking on pane
+            setSelectedElements([]);
             setNodes((nodes) =>
               nodes.map((n) => ({
                 ...n,
-                selected: false, // Reset selected state of nodes when clicking on pane
+                selected: false,
               }))
             );
           }}
@@ -260,6 +280,7 @@ const App = () => {
         selectedNode={selectedElements[0]}
         setSelectedElements={setSelectedElements}
       />
+      <Modal isOpen={isModalOpen} onClose={closeModal} node={clickedNode} />
     </div>
   );
 };

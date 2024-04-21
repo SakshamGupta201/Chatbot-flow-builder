@@ -1,71 +1,34 @@
-// Modal.js
+import React from "react";
+import "./Modal.css"; // Import CSS file for modal styling
 
-import React, { useState } from "react";
-
-const Modal = ({ isOpen, onClose, type, onSubmit }) => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    username: ""
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(formData);
-  };
+const Modal = ({ isOpen, onClose, node }) => {
+  if (!isOpen || !node) return null;
 
   return (
-    <>
-      {isOpen && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <button className="close-btn" onClick={onClose}>
+    <div className="modal-overlay">
+      <div className="modal">
+        <div className="modal-header">
+          <h2>Node Details</h2>
+          <button className="close-btn" onClick={onClose}>
+            &times;
+          </button>
+        </div>
+        <div className="modal-body">
+          <div className="node-info">
+            <p><strong>ID:</strong> {node.id}</p>
+            <p><strong>Type:</strong> {node.type}</p>
+            <p><strong>Label:</strong> {node.data.label}</p>
+            {/* Add more node details here */}
+          </div>
+          <div className="modal-actions">
+            <button className="btn btn-primary" onClick={onClose}>
               Close
             </button>
-            <h2>{type === "node1" ? "Node 1 Form" : "Node 2 Form"}</h2>
-            <form onSubmit={handleSubmit}>
-              {type === "node1" ? (
-                <>
-                  <label>Email:</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                  />
-                </>
-              ) : (
-                <>
-                  <label>Username:</label>
-                  <input
-                    type="text"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleChange}
-                  />
-                </>
-              )}
-              <label>Password:</label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-              <button type="submit">Submit</button>
-            </form>
+            {/* Add additional action buttons if needed */}
           </div>
         </div>
-      )}
-    </>
+      </div>
+    </div>
   );
 };
 
