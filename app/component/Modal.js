@@ -1,7 +1,44 @@
-import React from "react";
-import "./Modal.css"; // Import CSS file for modal styling
+import React, { useMemo, useEffect } from "react";
+import "./Modal.css";
+import DynamicForm from "./DynamicForm";
+import UsernamePasswordForm from "./UsernamePasswordForm";
 
 const Modal = ({ isOpen, onClose, node }) => {
+  // Memoize the renderForm function
+  const renderForm = useMemo(() => {
+    if (!node) return null;
+
+    switch (node.type) {
+      case "textnode":
+        return <DynamicForm nodeId={node.id} />;
+      case "node2":
+        return <UsernamePasswordForm nodeId={node.id} />;
+      default:
+        return null;
+    }
+  }, [node]);
+
+  useEffect(() => {
+    // Function to populate form fields from local storage
+    const populateFormFields = () => {
+      const storedData = localStorage.getItem(node.id);
+      if (storedData) {
+        const formData = JSON.parse(storedData);
+        // Update form fields with stored values
+        // Example: setFields(formData);
+      }
+    };
+
+    if (isOpen && node) {
+      populateFormFields();
+    }
+  }, [isOpen, node]);
+
+  const handleClose = () => {
+    // Additional cleanup if needed before closing modal
+    onClose();
+  };
+
   if (!isOpen || !node) return null;
 
   return (
@@ -9,7 +46,7 @@ const Modal = ({ isOpen, onClose, node }) => {
       <div className="modal">
         <div className="modal-header">
           <h2>Node Details</h2>
-          <button className="close-btn" onClick={onClose}>
+          <button className="close-btn" onClick={handleClose}>
             &times;
           </button>
         </div>
@@ -20,8 +57,9 @@ const Modal = ({ isOpen, onClose, node }) => {
             <p><strong>Label:</strong> {node.data.label}</p>
             {/* Add more node details here */}
           </div>
+          {renderForm}
           <div className="modal-actions">
-            <button className="btn btn-primary" onClick={onClose}>
+            <button className="btn btn-primary" onClick={handleClose}>
               Close
             </button>
             {/* Add additional action buttons if needed */}

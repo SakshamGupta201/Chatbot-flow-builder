@@ -85,6 +85,11 @@ const App = () => {
 
   // Update nodes data when nodeName or selectedElements changes
   useEffect(() => {
+    // Clear all localstorage when page is loaded
+    localStorage.clear();
+  }, []);
+
+  useEffect(() => {
     if (selectedElements.length > 0) {
       setNodes((nds) =>
         nds.map((node) => {
@@ -101,6 +106,7 @@ const App = () => {
       setNodeName(""); // Clear nodeName when no node is selected
     }
   }, [nodeName, selectedElements, setNodes]);
+
 
   // Handle node click
   const onNodeClick = useCallback((event, node) => {
