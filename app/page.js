@@ -24,11 +24,11 @@ import "reactflow/dist/base.css";
 
 import "../tailwind.config.js";
 import Sidebar from "./component/sidebar";
-import Node2 from "./component/archive/Node2.js";
 import Modal from "./component/Modal.js";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify';
+import TextNode from "./component/TextNode.js";
 
 
 // Key for local storage
@@ -45,9 +45,9 @@ const App = () => {
   // Define custom node types
   const nodeTypes = useMemo(
     () => ({
-      orgnizationForm: Node2,
-      networkLicensingForm: Node2,
-      siteInformationForm: Node2,
+      orgnizationForm: TextNode,
+      networkLicensingForm: TextNode,
+      siteInformationForm: TextNode,
     }),
     []
   );
@@ -224,6 +224,47 @@ const App = () => {
     },
     [reactFlowInstance]
   );
+
+  const createSite = async (formDataObject) => {
+    try {
+      // Format the data according to the specified format
+      const formattedData = {
+        "organization_name": formDataObject.organizationForm.organizationName,
+        "site_name": formDataObject.siteInformationForm.siteName,
+        "site_type": formDataObject.siteInformationForm.siteType,
+        "site_region": formDataObject.siteInformationForm.siteRegion,
+        "hub_id": formDataObject.networkLicensingForm.hubId,
+        "sal_code": formDataObject.networkLicensingForm.salCode,
+        "site_address": formDataObject.organizationForm.siteAddress,
+        "country": formDataObject.organizationForm.country,
+        "city": formDataObject.organizationForm.city,
+        "network_name": formDataObject.networkLicensingForm.networkName,
+        "site_tag": formDataObject.networkLicensingForm.siteTag,
+        "time_zone": formDataObject.siteInformationForm.timeZone,
+        "license_shared": formDataObject.networkLicensingForm.licenseShared
+      };
+
+      const response = await fetch('http://localhost:8000/sites/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formattedData),
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Failed to create site: ${errorMessage}`);
+      }
+
+      const responseData = await response.json();
+      return responseData;
+    } catch (error) {
+      console.error('Error creating site:', error);
+      throw error;
+    }
+  };
+
   const runFlow = () => {
     // Create an object to store the form data
     const formDataObject = {};
@@ -307,11 +348,24 @@ const App = () => {
           console.log("No form data found for this node.");
         }
       });
-      console.log(formDataObject);
+      debugger;
+      // Call the createSite function with the formDataObject
+      createSite(formDataObject)
+        .then(data => {
+          console.log('Site created successfully:', data);
+          toast.success('Site created successfully.'); // Add success toast
+          // Handle success response here
+        })
+        .catch(error => {
+          console.error('Failed to create site:', error);
+          // Handle error here
+        });
+
     } else {
       console.log("No flow data found in local storage.");
     }
   };
+
 
 
 
@@ -374,33 +428,33 @@ const App = () => {
           <MiniMap zoomable pannable />
           <Panel>
             <button
-              className=" m-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className=" m-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
               onClick={onSave}
             >
               save flow
             </button>
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
               onClick={onRestore}
             >
               restore flow
             </button>
 
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
               onClick={onReset}
             >
               Rest flow
             </button>
-
-            <hr>
-            </hr>
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
               onClick={runFlow}
             >
               Run
             </button>
+
+            <hr>
+            </hr>
 
           </Panel>
         </ReactFlow>

@@ -106,13 +106,15 @@ const NetworkLicensingForm = ({ nodeId }) => {
       </div>
       <div className="field">
         <label htmlFor="licenseShared">License Shared:</label>
-        <input
+        <select
           id="licenseShared"
-          type="text"
           value={licenseShared}
           onChange={handleLicenseSharedChange}
-          placeholder="Enter License Shared"
-        />
+        >
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
       </div>
     </div>
   );

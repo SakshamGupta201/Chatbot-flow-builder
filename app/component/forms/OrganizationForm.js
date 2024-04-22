@@ -1,31 +1,30 @@
 import React, { useState, useEffect } from "react";
+import countryList from "./country_list.json"; // Importing country list JSON
 import "./styles.css";
 
 const OrganizationForm = ({ nodeId }) => {
-  const [organization, setOrganization] = useState(""); // State for organization
+  const [organizationName, setOrganizationName] = useState("");
   const [country, setCountry] = useState("");
   const [city, setCity] = useState("");
   const [siteAddress, setSiteAddress] = useState("");
-  const [hubId, setHubId] = useState("");
 
   // Load data from local storage when component mounts
   useEffect(() => {
     const storedData = localStorage.getItem(nodeId);
     if (storedData) {
-      const { organization: storedOrganization, country: storedCountry, city: storedCity, siteAddress: storedSiteAddress, hubId: storedHubId } = JSON.parse(storedData);
-      setOrganization(storedOrganization);
+      const { organizationName: storedOrganizationName, country: storedCountry, city: storedCity, siteAddress: storedSiteAddress } = JSON.parse(storedData);
+      setOrganizationName(storedOrganizationName);
       setCountry(storedCountry);
       setCity(storedCity);
       setSiteAddress(storedSiteAddress);
-      setHubId(storedHubId);
     }
   }, [nodeId]);
 
-  const handleOrganizationChange = (event) => {
+  const handleOrganizationNameChange = (event) => {
     const { value } = event.target;
-    setOrganization(value);
+    setOrganizationName(value);
     // Update local storage
-    updateLocalStorage({ organization: value });
+    updateLocalStorage({ organizationName: value });
   };
 
   const handleCountryChange = (event) => {
@@ -49,13 +48,6 @@ const OrganizationForm = ({ nodeId }) => {
     updateLocalStorage({ siteAddress: value });
   };
 
-  const handleHubIdChange = (event) => {
-    const { value } = event.target;
-    setHubId(value);
-    // Update local storage
-    updateLocalStorage({ hubId: value });
-  };
-
   const updateLocalStorage = (data) => {
     const storedData = JSON.parse(localStorage.getItem(nodeId)) || {};
     const newData = { ...storedData, ...data };
@@ -65,27 +57,27 @@ const OrganizationForm = ({ nodeId }) => {
   return (
     <div className="dynamic-form">
       <div className="field">
-        <label htmlFor="organization">Organization:</label>
-        <select
-          id="organization"
-          value={organization}
-          onChange={handleOrganizationChange}
-        >
-          <option value="">Select an organization</option>
-          <option value="Org 1">Org 1</option>
-          <option value="Org 2">Org 2</option>
-          {/* Add more options as needed */}
-        </select>
+        <label htmlFor="organizationName">Organization Name:</label>
+        <input
+          id="organizationName"
+          type="text"
+          value={organizationName}
+          onChange={handleOrganizationNameChange}
+          placeholder="Enter organization name"
+        />
       </div>
       <div className="field">
         <label htmlFor="country">Country:</label>
-        <input
+        <select
           id="country"
-          type="text"
           value={country}
           onChange={handleCountryChange}
-          placeholder="Enter country"
-        />
+        >
+          <option value="">Select Country</option>
+          {countryList.map(country => (
+            <option key={country.code} value={country.name}>{country.name}</option>
+          ))}
+        </select>
       </div>
       <div className="field">
         <label htmlFor="city">City:</label>
@@ -105,16 +97,6 @@ const OrganizationForm = ({ nodeId }) => {
           value={siteAddress}
           onChange={handleSiteAddressChange}
           placeholder="Enter site address"
-        />
-      </div>
-      <div className="field">
-        <label htmlFor="hubId">Hub ID:</label>
-        <input
-          id="hubId"
-          type="text"
-          value={hubId}
-          onChange={handleHubIdChange}
-          placeholder="Enter hub ID"
         />
       </div>
     </div>
