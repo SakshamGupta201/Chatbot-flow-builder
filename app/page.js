@@ -24,12 +24,8 @@ import "reactflow/dist/base.css";
 
 import "../tailwind.config.js";
 import Sidebar from "./component/sidebar";
-import TextNode from "./component/TextNode";
-import Node2 from "./component/Node2";
+import Node2 from "./component/archive/Node2.js";
 import Modal from "./component/Modal.js";
-
-import { EdgeText } from "react-flow-renderer";
-import { FiArrowRight } from "react-icons/fi"; // Import arrow icon
 
 
 // Key for local storage
@@ -46,8 +42,9 @@ const App = () => {
   // Define custom node types
   const nodeTypes = useMemo(
     () => ({
-      textnode: TextNode,
-      node2: Node2,
+      orgnizationForm: Node2,
+      networkLicensingForm: Node2,
+      siteInformationForm: Node2,
     }),
     []
   );
@@ -99,17 +96,6 @@ const App = () => {
   }, [nodeName, selectedElements, setNodes]);
 
 
-  // Handle node click
-  const onNodeClick = useCallback((event, node) => {
-    setSelectedElements([node]);
-    setNodeName(node.data.label);
-    setNodes((nodes) =>
-      nodes.map((n) => ({
-        ...n,
-        selected: n.id === node.id,
-      }))
-    );
-  }, []);
 
   // Setup viewport
   const { setViewport } = useReactFlow();
@@ -236,6 +222,9 @@ const App = () => {
     [reactFlowInstance]
   );
   const runFlow = () => {
+    // Create an object to store the form data
+    const formDataObject = {};
+
     // Retrieve the flow data from local storage
     const flowData = JSON.parse(localStorage.getItem(flowKey));
 
@@ -243,39 +232,53 @@ const App = () => {
     if (flowData && flowData.nodes) {
       // Iterate through each node in the flow data
       flowData.nodes.forEach(node => {
-        console.log(`Node ID: ${node.id}`);
-        console.log(`Node Label: ${node.data.label}`);
-
         // Retrieve form values for the current node ID
         const formDataKey = `${node.id}`;
         const formData = JSON.parse(localStorage.getItem(formDataKey));
-        debugger;
-        // Log form values if they exist
+
+        // Check if formData exists
         if (formData) {
-          console.log("Form Data:");
-          // Check if formData is an array
-          if (Array.isArray(formData)) {
-            // If formData is an array, iterate over each form data object
-            formData.forEach(field => {
-              // Log each key-value pair in the form data object
-              Object.entries(field).forEach(([key, value]) => {
-                console.log(`- ${key}: ${value}`);
-              });
-            });
-          } else {
-            // If formData is not an array, log it directly
-            console.log(formData);
+          // Check the label of the node to determine the fields to extract
+          switch (node.data.label) {
+            case "orgnizationForm":
+              // Store form data for organizationForm
+              formDataObject.organizationForm = {
+                organizationName: formData["organizationName"],
+                country: formData["country"],
+                city: formData["city"],
+                siteAddress: formData["siteAddress"]
+              };
+              break;
+            case "siteInformationForm":
+              // Store form data for siteInformationForm
+              formDataObject.siteInformationForm = {
+                siteName: formData["siteName"],
+                siteType: formData["siteType"],
+                siteRegion: formData["siteRegion"],
+                timeZone: formData["timeZone"]
+              };
+              break;
+            default:
+              // Store form data for default case
+              formDataObject.networkLicensingForm = {
+                hubID: formData["hubID"],
+                salCode: formData["salCode"],
+                networkName: formData["networkName"],
+                siteTag: formData["siteTag"],
+                licenseShared: formData["licenseShared"]
+              };
+              break;
           }
         } else {
           console.log("No form data found for this node.");
         }
-
-        console.log("------------------------------------");
       });
+      console.log(formDataObject);
     } else {
       console.log("No flow data found in local storage.");
     }
   };
+
 
   const onEdgeUpdateStart = useCallback(() => {
     console.log("Calle")

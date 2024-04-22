@@ -1,7 +1,8 @@
 import React, { useMemo, useEffect } from "react";
 import "./Modal.css";
-import DynamicForm from "./DynamicForm";
-import UsernamePasswordForm from "./UsernamePasswordForm";
+import OrganizationForm from "./forms/OrganizationForm";
+import NetworkLicensingForm from "./forms/NetworkLicensingForm";
+import SiteInformationForm from "./forms/SiteInformationForm";
 
 const Modal = ({ isOpen, onClose, node }) => {
   // Memoize the renderForm function
@@ -9,10 +10,12 @@ const Modal = ({ isOpen, onClose, node }) => {
     if (!node) return null;
 
     switch (node.type) {
-      case "textnode":
-        return <DynamicForm nodeId={node.id} />;
-      case "node2":
-        return <UsernamePasswordForm nodeId={node.id} />;
+      case "orgnizationForm":
+        return <OrganizationForm nodeId={node.id} />;
+      case "networkLicensingForm":
+        return <NetworkLicensingForm nodeId={node.id} />;
+      case "siteInformationForm":
+        return <SiteInformationForm nodeId={node.id} />;
       default:
         return null;
     }
@@ -51,12 +54,6 @@ const Modal = ({ isOpen, onClose, node }) => {
           </button>
         </div>
         <div className="modal-body">
-          <div className="node-info">
-            <p><strong>ID:</strong> {node.id}</p>
-            <p><strong>Type:</strong> {node.type}</p>
-            <p><strong>Label:</strong> {node.data.label}</p>
-            {/* Add more node details here */}
-          </div>
           {renderForm}
           <div className="modal-actions">
             <button className="btn btn-primary" onClick={handleClose}>

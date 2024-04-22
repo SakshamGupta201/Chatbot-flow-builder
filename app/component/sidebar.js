@@ -42,17 +42,24 @@ export default function Sidebar({
           <h3 className="text-xl mb-4 text-blue-900">Nodes Panel</h3>
           <div
             className="bg-white p-3 border-2 border-blue-500 rounded cursor-move flex justify-center items-center text-blue-500 hover:bg-blue-500 hover:text-white transition-colors duration-200"
-            onDragStart={(event) => onDragStart(event, "textnode")}
+            onDragStart={(event) => onDragStart(event, "orgnizationForm")}
             draggable
           >
-            Form Node 1
+            Orgnization
           </div>
           <div
             className="bg-white p-3 border-2 border-blue-500 rounded cursor-move flex justify-center items-center text-blue-500 hover:bg-blue-500 hover:text-white transition-colors duration-200"
-            onDragStart={(event) => onDragStart(event, "node2")}
+            onDragStart={(event) => onDragStart(event, "networkLicensingForm")}
             draggable
           >
-            Form Node 2
+            Network Licensing
+          </div>
+          <div
+            className="bg-white p-3 border-2 border-blue-500 rounded cursor-move flex justify-center items-center text-blue-500 hover:bg-blue-500 hover:text-white transition-colors duration-200"
+            onDragStart={(event) => onDragStart(event, "siteInformationForm")}
+            draggable
+          >
+            Site Information
           </div>
         </>
       )}
