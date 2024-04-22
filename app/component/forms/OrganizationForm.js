@@ -2,28 +2,30 @@ import React, { useState, useEffect } from "react";
 import "./styles.css";
 
 const OrganizationForm = ({ nodeId }) => {
-  const [organizationName, setOrganizationName] = useState("");
+  const [organization, setOrganization] = useState(""); // State for organization
   const [country, setCountry] = useState("");
   const [city, setCity] = useState("");
   const [siteAddress, setSiteAddress] = useState("");
+  const [hubId, setHubId] = useState("");
 
   // Load data from local storage when component mounts
   useEffect(() => {
     const storedData = localStorage.getItem(nodeId);
     if (storedData) {
-      const { organizationName: storedOrganizationName, country: storedCountry, city: storedCity, siteAddress: storedSiteAddress } = JSON.parse(storedData);
-      setOrganizationName(storedOrganizationName);
+      const { organization: storedOrganization, country: storedCountry, city: storedCity, siteAddress: storedSiteAddress, hubId: storedHubId } = JSON.parse(storedData);
+      setOrganization(storedOrganization);
       setCountry(storedCountry);
       setCity(storedCity);
       setSiteAddress(storedSiteAddress);
+      setHubId(storedHubId);
     }
   }, [nodeId]);
 
-  const handleOrganizationNameChange = (event) => {
+  const handleOrganizationChange = (event) => {
     const { value } = event.target;
-    setOrganizationName(value);
+    setOrganization(value);
     // Update local storage
-    updateLocalStorage({ organizationName: value });
+    updateLocalStorage({ organization: value });
   };
 
   const handleCountryChange = (event) => {
@@ -47,6 +49,13 @@ const OrganizationForm = ({ nodeId }) => {
     updateLocalStorage({ siteAddress: value });
   };
 
+  const handleHubIdChange = (event) => {
+    const { value } = event.target;
+    setHubId(value);
+    // Update local storage
+    updateLocalStorage({ hubId: value });
+  };
+
   const updateLocalStorage = (data) => {
     const storedData = JSON.parse(localStorage.getItem(nodeId)) || {};
     const newData = { ...storedData, ...data };
@@ -56,14 +65,17 @@ const OrganizationForm = ({ nodeId }) => {
   return (
     <div className="dynamic-form">
       <div className="field">
-        <label htmlFor="organizationName">Organization Name:</label>
-        <input
-          id="organizationName"
-          type="text"
-          value={organizationName}
-          onChange={handleOrganizationNameChange}
-          placeholder="Enter organization name"
-        />
+        <label htmlFor="organization">Organization:</label>
+        <select
+          id="organization"
+          value={organization}
+          onChange={handleOrganizationChange}
+        >
+          <option value="">Select an organization</option>
+          <option value="Org 1">Org 1</option>
+          <option value="Org 2">Org 2</option>
+          {/* Add more options as needed */}
+        </select>
       </div>
       <div className="field">
         <label htmlFor="country">Country:</label>
@@ -93,6 +105,16 @@ const OrganizationForm = ({ nodeId }) => {
           value={siteAddress}
           onChange={handleSiteAddressChange}
           placeholder="Enter site address"
+        />
+      </div>
+      <div className="field">
+        <label htmlFor="hubId">Hub ID:</label>
+        <input
+          id="hubId"
+          type="text"
+          value={hubId}
+          onChange={handleHubIdChange}
+          placeholder="Enter hub ID"
         />
       </div>
     </div>

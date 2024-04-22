@@ -26,6 +26,9 @@ import "../tailwind.config.js";
 import Sidebar from "./component/sidebar";
 import Node2 from "./component/archive/Node2.js";
 import Modal from "./component/Modal.js";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 
 // Key for local storage
@@ -241,6 +244,16 @@ const App = () => {
           // Check the label of the node to determine the fields to extract
           switch (node.data.label) {
             case "orgnizationForm":
+              // Check for missing keys or empty values in formData
+              if (!formData["organizationName"] || !formData["country"] || !formData["city"] || !formData["siteAddress"] || formData["organizationName"].trim() === '' || formData["country"].trim() === '' || formData["city"].trim() === '' || formData["siteAddress"].trim() === '') {
+                const missingFields = [];
+                if (!formData["organizationName"]) missingFields.push("organizationName");
+                if (!formData["country"]) missingFields.push("country");
+                if (!formData["city"]) missingFields.push("city");
+                if (!formData["siteAddress"]) missingFields.push("siteAddress");
+                toast.error(`Missing or empty value(s) in organizationForm data: ${missingFields.join(", ")}.`);
+                return; // Exit the switch case early
+              }
               // Store form data for organizationForm
               formDataObject.organizationForm = {
                 organizationName: formData["organizationName"],
@@ -250,6 +263,16 @@ const App = () => {
               };
               break;
             case "siteInformationForm":
+              // Check for missing keys or empty values in formData
+              if (!formData["siteName"] || !formData["siteType"] || !formData["siteRegion"] || !formData["timeZone"] || formData["siteName"].trim() === '' || formData["siteType"].trim() === '' || formData["siteRegion"].trim() === '' || formData["timeZone"].trim() === '') {
+                const missingFields = [];
+                if (!formData["siteName"]) missingFields.push("siteName");
+                if (!formData["siteType"]) missingFields.push("siteType");
+                if (!formData["siteRegion"]) missingFields.push("siteRegion");
+                if (!formData["timeZone"]) missingFields.push("timeZone");
+                toast.error(`Missing or empty value(s) in siteInformationForm data: ${missingFields.join(", ")}.`);
+                return; // Exit the switch case early
+              }
               // Store form data for siteInformationForm
               formDataObject.siteInformationForm = {
                 siteName: formData["siteName"],
@@ -259,9 +282,20 @@ const App = () => {
               };
               break;
             default:
+              // Check for missing keys or empty values in formData
+              if (!formData["hubId"] || !formData["salCode"] || !formData["networkName"] || !formData["siteTag"] || !formData["licenseShared"] || formData["hubId"].trim() === '' || formData["salCode"].trim() === '' || formData["networkName"].trim() === '' || formData["siteTag"].trim() === '' || formData["licenseShared"].trim() === '') {
+                const missingFields = [];
+                if (!formData["hubId"]) missingFields.push("hubId");
+                if (!formData["salCode"]) missingFields.push("salCode");
+                if (!formData["networkName"]) missingFields.push("networkName");
+                if (!formData["siteTag"]) missingFields.push("siteTag");
+                if (!formData["licenseShared"]) missingFields.push("licenseShared");
+                toast.error(`Missing or empty value(s) in networkLicensingForm data: ${missingFields.join(", ")}.`);
+                return; // Exit the switch case early
+              }
               // Store form data for default case
               formDataObject.networkLicensingForm = {
-                hubID: formData["hubID"],
+                hubId: formData["hubId"],
                 salCode: formData["salCode"],
                 networkName: formData["networkName"],
                 siteTag: formData["siteTag"],
@@ -278,6 +312,7 @@ const App = () => {
       console.log("No flow data found in local storage.");
     }
   };
+
 
 
   const onEdgeUpdateStart = useCallback(() => {
@@ -369,6 +404,7 @@ const App = () => {
 
           </Panel>
         </ReactFlow>
+        <ToastContainer />
       </div>
 
       <Sidebar
@@ -378,6 +414,7 @@ const App = () => {
         setSelectedElements={setSelectedElements}
       />
       <Modal isOpen={isModalOpen} onClose={closeModal} node={clickedNode} />
+
     </div>
   );
 };
