@@ -233,7 +233,7 @@ const App = () => {
         "site_name": formDataObject.siteInformationForm.siteName,
         "site_type": formDataObject.siteInformationForm.siteType,
         "site_region": formDataObject.siteInformationForm.siteRegion,
-        "hub_id": formDataObject.networkLicensingForm.hubId,
+        "hub_id": formDataObject.siteInformationForm.hubId,
         "sal_code": formDataObject.networkLicensingForm.salCode,
         "site_address": formDataObject.organizationForm.siteAddress,
         "country": formDataObject.organizationForm.country,
@@ -311,6 +311,7 @@ const App = () => {
                 if (!formData["siteType"]) missingFields.push("siteType");
                 if (!formData["siteRegion"]) missingFields.push("siteRegion");
                 if (!formData["timeZone"]) missingFields.push("timeZone");
+                if (!formData["hubId"]) missingFields.push("hubId");
                 toast.error(`Missing or empty value(s) in siteInformationForm data: ${missingFields.join(", ")}.`);
                 return; // Exit the switch case early
               }
@@ -319,14 +320,15 @@ const App = () => {
                 siteName: formData["siteName"],
                 siteType: formData["siteType"],
                 siteRegion: formData["siteRegion"],
-                timeZone: formData["timeZone"]
+                timeZone: formData["timeZone"],
+                hubId: formData["hubId"],
               };
               break;
             default:
               // Check for missing keys or empty values in formData
               if (!formData["hubId"] || !formData["salCode"] || !formData["networkName"] || !formData["siteTag"] || !formData["licenseShared"] || formData["hubId"].trim() === '' || formData["salCode"].trim() === '' || formData["networkName"].trim() === '' || formData["siteTag"].trim() === '' || formData["licenseShared"].trim() === '') {
                 const missingFields = [];
-                if (!formData["hubId"]) missingFields.push("hubId");
+                
                 if (!formData["salCode"]) missingFields.push("salCode");
                 if (!formData["networkName"]) missingFields.push("networkName");
                 if (!formData["siteTag"]) missingFields.push("siteTag");
@@ -336,7 +338,7 @@ const App = () => {
               }
               // Store form data for default case
               formDataObject.networkLicensingForm = {
-                hubId: formData["hubId"],
+                
                 salCode: formData["salCode"],
                 networkName: formData["networkName"],
                 siteTag: formData["siteTag"],

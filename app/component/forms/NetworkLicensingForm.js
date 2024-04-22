@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import "./styles.css"; // Import the CSS file
 
 const NetworkLicensingForm = ({ nodeId }) => {
-  const [hubId, setHubId] = useState("");
   const [salCode, setSalCode] = useState("");
   const [networkName, setNetworkName] = useState("");
   const [siteTag, setSiteTag] = useState("");
@@ -12,21 +11,13 @@ const NetworkLicensingForm = ({ nodeId }) => {
   useEffect(() => {
     const storedData = localStorage.getItem(nodeId);
     if (storedData) {
-      const { hubId: storedHubId, salCode: storedSalCode, networkName: storedNetworkName, siteTag: storedSiteTag, licenseShared: storedLicenseShared } = JSON.parse(storedData);
-      setHubId(storedHubId);
+      const { salCode: storedSalCode, networkName: storedNetworkName, siteTag: storedSiteTag, licenseShared: storedLicenseShared } = JSON.parse(storedData);
       setSalCode(storedSalCode);
       setNetworkName(storedNetworkName);
       setSiteTag(storedSiteTag);
       setLicenseShared(storedLicenseShared);
     }
   }, [nodeId]);
-
-  const handleHubIdChange = (event) => {
-    const { value } = event.target;
-    setHubId(value);
-    // Update local storage
-    updateLocalStorage({ hubId: value });
-  };
 
   const handleSalCodeChange = (event) => {
     const { value } = event.target;
@@ -64,16 +55,6 @@ const NetworkLicensingForm = ({ nodeId }) => {
 
   return (
     <div className="network-licensing-form">
-      <div className="field">
-        <label htmlFor="hubId">Hub ID:</label>
-        <input
-          id="hubId"
-          type="text"
-          value={hubId}
-          onChange={handleHubIdChange}
-          placeholder="Enter Hub ID"
-        />
-      </div>
       <div className="field">
         <label htmlFor="salCode">SAL Code:</label>
         <input
