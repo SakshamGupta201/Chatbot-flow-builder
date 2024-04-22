@@ -18,6 +18,7 @@ import ReactFlow, {
   MiniMap,
   Controls,
   Background,
+  MarkerType
 } from "reactflow";
 import "reactflow/dist/base.css";
 
@@ -26,6 +27,10 @@ import Sidebar from "./component/sidebar";
 import TextNode from "./component/TextNode";
 import Node2 from "./component/Node2";
 import Modal from "./component/Modal.js";
+
+import { EdgeText } from "react-flow-renderer";
+import { FiArrowRight } from "react-icons/fi"; // Import arrow icon
+
 
 // Key for local storage
 const flowKey = "flow-key";
@@ -169,15 +174,25 @@ const App = () => {
     setNodes([]);
     setEdges([]);
   }, []);
-
-  // Handle edge connection
   const onConnect = useCallback(
     (params) => {
       console.log("Edge created: ", params);
-      setEdges((eds) => addEdge(params, eds));
+      setEdges((eds) =>
+        addEdge(
+          {
+            ...params,
+            markerEnd: {
+              type: MarkerType.ArrowClosed,
+            },
+            animated: true,
+          },
+          eds
+        )
+      );
     },
     [setEdges]
   );
+
 
   // Enable drop effect on drag over
   const onDragOver = useCallback((event) => {
@@ -189,7 +204,7 @@ const App = () => {
 
   const onDrop = useCallback(
     (event) => {
-      
+
       event.preventDefault();
 
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
@@ -222,14 +237,14 @@ const App = () => {
   const runFlow = () => {
     // Retrieve the flow data from local storage
     const flowData = JSON.parse(localStorage.getItem(flowKey));
-  
+
     // Check if flow data exists
     if (flowData && flowData.nodes) {
       // Iterate through each node in the flow data
       flowData.nodes.forEach(node => {
         console.log(`Node ID: ${node.id}`);
         console.log(`Node Label: ${node.data.label}`);
-  
+
         // Retrieve form values for the current node ID
         const formDataKey = `${node.id}`;
         const formData = JSON.parse(localStorage.getItem(formDataKey));
@@ -253,14 +268,14 @@ const App = () => {
         } else {
           console.log("No form data found for this node.");
         }
-  
+
         console.log("------------------------------------");
       });
     } else {
       console.log("No flow data found in local storage.");
     }
   };
-  
+
 
 
   const rfStyle = {
