@@ -76,6 +76,7 @@ const App = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [selectedElements, setSelectedElements] = useState([]);
   const [nodeName, setNodeName] = useState("");
+  const edgeUpdateSuccessful = useRef(true);
 
   // Update nodes data when nodeName or selectedElements changes
 
@@ -276,6 +277,25 @@ const App = () => {
     }
   };
 
+  const onEdgeUpdateStart = useCallback(() => {
+    console.log("Calle")
+    edgeUpdateSuccessful.current = false;
+  }, []);
+
+  const onEdgeUpdate = useCallback((oldEdge, newConnection) => {
+    console.log("Called")
+    edgeUpdateSuccessful.current = true;
+    setEdges((els) => updateEdge(oldEdge, newConnection, els));
+  }, []);
+
+  const onEdgeUpdateEnd = useCallback((_, edge) => {
+    console.log("Calleddd")
+    if (!edgeUpdateSuccessful.current) {
+      setEdges((eds) => eds.filter((e) => e.id !== edge.id));
+    }
+    edgeUpdateSuccessful.current = true;
+  }, []);
+
 
 
   const rfStyle = {
@@ -291,6 +311,9 @@ const App = () => {
           edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
+          onEdgeUpdate={onEdgeUpdate}
+          onEdgeUpdateStart={onEdgeUpdateStart}
+          onEdgeUpdateEnd={onEdgeUpdateEnd}
           onConnect={onConnect}
           onInit={setReactFlowInstance}
           onDrop={onDrop}
