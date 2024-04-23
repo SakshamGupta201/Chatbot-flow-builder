@@ -30,6 +30,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import TextNode from "./component/TextNode.js";
 import KeyInputModal from "./component/KeyInputModal.js";
+import SavedFlowKeysModal from "./component/SavedFlowKeysModal.js";
 // Key for local storage
 const flowKey = "flow-key";
 
@@ -80,6 +81,25 @@ const App = () => {
   const [selectedElements, setSelectedElements] = useState([]);
   const [nodeName, setNodeName] = useState("");
   const edgeUpdateSuccessful = useRef(true);
+  const [savedFlowsModalOpen, setSavedFlowsModalOpen] = useState(false); // State to manage the modal
+  const [savedFlows, setSavedFlows] = useState([]);
+
+  const openSavedFlowsModal = useCallback(() => {
+    const flows = JSON.parse(localStorage.getItem("saved_flows"));
+    if (flows) {
+      const keys = Object.keys(flows);
+      setSavedFlows(keys);
+      setSavedFlowsModalOpen(true);
+    } else {
+      // Handle case when there are no saved flows
+      // Maybe show a message or do nothing
+    }
+  }, []);
+
+  const closeSavedFlowsModal = useCallback(() => {
+    setSavedFlowsModalOpen(false);
+    setSavedFlows([]);
+  }, []);
 
   // Update nodes data when nodeName or selectedElements changes
 
@@ -133,8 +153,7 @@ const App = () => {
   const [keyInput, setKeyInput] = useState('');
 
   const handleSave = async (key) => {
-    setKeyInput(key);
-    // Existing save logic
+    const savedFlowsKey = "saved_flows";
     if (reactFlowInstance) {
       const emptyTargetHandles = checkEmptyTargetHandles();
 
@@ -146,38 +165,23 @@ const App = () => {
       } else {
         const flow = reactFlowInstance.toObject();
 
-        // Create the data object to be sent to the backend
-        const data = {
-          key: key,
-          value: flow
-        };
-
-        try {
-          debugger;
-          // Backend call
-          const response = await fetch('http://localhost:8000/store/', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-          });
-
-          if (!response.ok) {
-            toast.error('Failed to save data');
-            return;
-          }
-
-          // Existing logic to save to local storage
-          localStorage.setItem(key, JSON.stringify(flow));
-          toast.success("Flow Saved!");
-        } catch (error) {
-          console.error('Error saving data:', error);
-          toast.error("Error saving data. Please try again later.");
+        // Retrieve existing saved flows or initialize an empty object if it doesn't exist
+        let savedFlows = JSON.parse(localStorage.getItem(savedFlowsKey));
+        if (!savedFlows || typeof savedFlows !== 'object') {
+          savedFlows = {};
         }
+
+        // Assign the current flow to the specified key
+        savedFlows[key] = flow;
+
+        // Save the updated object back to local storage
+        localStorage.setItem(savedFlowsKey, JSON.stringify(savedFlows));
+
+        onSave();
       }
     }
   };
+
 
 
 
@@ -197,6 +201,11 @@ const App = () => {
 
     restoreFlow();
   }, [setNodes, setViewport]);
+
+  
+  
+
+
 
   const onReset = useCallback(() => {
     localStorage.clear();
@@ -315,9 +324,12 @@ const App = () => {
       } else {
         const flow = reactFlowInstance.toObject();
         localStorage.setItem(flowKey, JSON.stringify(flow));
+        toast.success("Flow saved!");
       }
     }
   }, [reactFlowInstance, nodes, isNodeUnconnected]);
+
+
 
   const runFlow = () => {
     onSave();
@@ -552,6 +564,13 @@ const App = () => {
               Run
             </button>
 
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
+              onClick={openSavedFlowsModal}
+            >
+              Show Saved Flows
+            </button>
+
             <hr></hr>
           </Panel>
         </ReactFlow>
@@ -572,6 +591,12 @@ const App = () => {
         isOpen={isKeyInputModalOpen}
         onClose={() => setIsKeyInputModalOpen(false)}
         onSave={handleSave}
+      />
+       <SavedFlowKeysModal
+        isOpen={savedFlowsModalOpen}
+        onClose={closeSavedFlowsModal}
+        savedFlows={savedFlows}
+        restoreFlow={onRestore}
       />
     </div>
   );
