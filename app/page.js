@@ -29,7 +29,6 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import TextNode from "./component/TextNode.js";
-import { fas } from "@fortawesome/free-solid-svg-icons";
 
 // Key for local storage
 const flowKey = "flow-key";
@@ -38,6 +37,13 @@ let id = 1;
 
 // Function for generating unique IDs for nodes
 const getId = () => `node_${id++}`;
+
+const orangeMinimapStyle = {
+  background: 'orange', // Change the background color to orange
+  border: '2px solid orange', // Change the border color to orange
+  borderRadius: '10px', // Optional: add some border radius for a rounded appearance
+};
+
 
 const App = () => {
   // Define custom node types
@@ -469,7 +475,8 @@ const App = () => {
         >
           <Background variant="dots" gap={12} size={1} />
           <Controls />
-          <MiniMap zoomable pannable />
+          {/* <MiniMap  /> */}
+          <MiniMap zoomable pannable style={orangeMinimapStyle} />
           <Panel>
             <button
               className=" m-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
