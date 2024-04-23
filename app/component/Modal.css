@@ -77,3 +77,8 @@
 .btn-primary:focus {
   outline: none;
 }
+
+
+.keymodal_input{
+  width: 50% !important;
+}

@@ -29,7 +29,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import TextNode from "./component/TextNode.js";
-
+import KeyInputModal from "./component/KeyInputModal.js";
 // Key for local storage
 const flowKey = "flow-key";
 
@@ -128,7 +128,13 @@ const App = () => {
   }, [nodes, edges]);
 
   // Save flow to local storage
-  const onSave = useCallback(() => {
+
+  const [isKeyInputModalOpen, setIsKeyInputModalOpen] = useState(false);
+  const [keyInput, setKeyInput] = useState('');
+
+  const handleSave = async (key) => {
+    setKeyInput(key);
+    // Existing save logic
     if (reactFlowInstance) {
       const emptyTargetHandles = checkEmptyTargetHandles();
 
@@ -139,11 +145,42 @@ const App = () => {
         return;
       } else {
         const flow = reactFlowInstance.toObject();
-        localStorage.setItem(flowKey, JSON.stringify(flow));
-        toast.success("Flow Saved!");
+
+        // Create the data object to be sent to the backend
+        const data = {
+          key: key,
+          value: flow
+        };
+
+        try {
+          debugger;
+          // Backend call
+          const response = await fetch('http://localhost:8000/store/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          });
+
+          if (!response.ok) {
+            toast.error('Failed to save data');
+            return;
+          }
+
+          // Existing logic to save to local storage
+          localStorage.setItem(key, JSON.stringify(flow));
+          toast.success("Flow Saved!");
+        } catch (error) {
+          console.error('Error saving data:', error);
+          toast.error("Error saving data. Please try again later.");
+        }
       }
     }
-  }, [reactFlowInstance, nodes, isNodeUnconnected]);
+  };
+
+
+
 
   // Restore flow from local storage
   const onRestore = useCallback(() => {
@@ -265,6 +302,23 @@ const App = () => {
     }
   };
 
+  // Save flow to local storage
+  const onSave = useCallback(() => {
+    if (reactFlowInstance) {
+      const emptyTargetHandles = checkEmptyTargetHandles();
+
+      if (nodes.length > 1 && (emptyTargetHandles > 1 || isNodeUnconnected())) {
+        toast.error(
+          "Error: More than one node has an empty target handle or there are unconnected nodes."
+        );
+        return;
+      } else {
+        const flow = reactFlowInstance.toObject();
+        localStorage.setItem(flowKey, JSON.stringify(flow));
+      }
+    }
+  }, [reactFlowInstance, nodes, isNodeUnconnected]);
+
   const runFlow = () => {
     onSave();
 
@@ -298,13 +352,11 @@ const App = () => {
                 if (!formData["city"]) missingFields.push("city");
                 if (!formData["siteAddress"]) missingFields.push("siteAddress");
                 console.error(
-                  `Missing or empty value(s) in organizationContent data for node ${
-                    node.type
+                  `Missing or empty value(s) in organizationContent data for node ${node.type
                   }: ${missingFields.join(", ")}.`
                 );
                 toast.error(
-                  `Missing or empty value(s) in organizationContent data for node ${
-                    node.type
+                  `Missing or empty value(s) in organizationContent data for node ${node.type
                   }: ${missingFields.join(", ")}.`
                 );
                 return;
@@ -334,13 +386,11 @@ const App = () => {
                 if (!formData["siteRegion"]) missingFields.push("siteRegion");
                 if (!formData["timeZone"]) missingFields.push("timeZone");
                 console.error(
-                  `Missing or empty value(s) in siteInformationForm data for node ${
-                    node.id
+                  `Missing or empty value(s) in siteInformationForm data for node ${node.id
                   }: ${missingFields.join(", ")}.`
                 );
                 toast.error(
-                  `Missing or empty value(s) in siteInformationForm data for node ${
-                    node.id
+                  `Missing or empty value(s) in siteInformationForm data for node ${node.id
                   }: ${missingFields.join(", ")}.`
                 );
                 return;
@@ -373,13 +423,11 @@ const App = () => {
                 if (!formData["licenseShared"])
                   missingFields.push("licenseShared");
                 console.error(
-                  `Missing or empty value(s) in networkLicensingForm data for node ${
-                    node.id
+                  `Missing or empty value(s) in networkLicensingForm data for node ${node.id
                   }: ${missingFields.join(", ")}.`
                 );
                 toast.error(
-                  `Missing or empty value(s) in networkLicensingForm data for node ${
-                    node.id
+                  `Missing or empty value(s) in networkLicensingForm data for node ${node.id
                   }: ${missingFields.join(", ")}.`
                 );
                 return;
@@ -480,7 +528,7 @@ const App = () => {
           <Panel>
             <button
               className=" m-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
-              onClick={onSave}
+              onClick={() => setIsKeyInputModalOpen(true)}
             >
               Save flow
             </button>
@@ -520,6 +568,11 @@ const App = () => {
         setSelectedElements={setSelectedElements}
       />
       <Modal isOpen={isModalOpen} onClose={closeModal} node={clickedNode} />
+      <KeyInputModal
+        isOpen={isKeyInputModalOpen}
+        onClose={() => setIsKeyInputModalOpen(false)}
+        onSave={handleSave}
+      />
     </div>
   );
 };

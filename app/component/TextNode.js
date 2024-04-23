@@ -5,7 +5,7 @@ import { Handle, Position } from "reactflow";
 function TextNode({ data, selected }) {
 
   let formTitle;
-  debugger
+ 
   switch (data.label) {
     case "orgnizationForm":
       formTitle = "Organization Data";

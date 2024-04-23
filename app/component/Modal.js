@@ -44,7 +44,7 @@ const Modal = ({ isOpen, onClose, node }) => {
 
   if (!isOpen || !node) return null;
   let formTitle;
-  debugger
+ 
   switch (node.type) {
     case "orgnizationForm":
       formTitle = "Organization Data Form";
