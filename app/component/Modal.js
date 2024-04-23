@@ -43,12 +43,26 @@ const Modal = ({ isOpen, onClose, node }) => {
   };
 
   if (!isOpen || !node) return null;
-
+  let formTitle;
+  debugger
+  switch (node.type) {
+    case "orgnizationForm":
+      formTitle = "Organization Data Form";
+      break;
+    case "networkLicensingForm":
+      formTitle = "Network Licensing Form";
+      break;
+    case "siteInformationForm":
+      formTitle = "Site Information Form";
+      break;
+    default:
+      formTitle = "";
+  }
   return (
     <div className="modal-overlay">
       <div className="modal">
         <div className="modal-header">
-          <h2>Node Details</h2>
+        <h2 className="modal-title">{formTitle} :</h2>
           <button className="close-btn" onClick={handleClose}>
             &times;
           </button>

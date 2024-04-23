@@ -18,18 +18,18 @@ import ReactFlow, {
   MiniMap,
   Controls,
   Background,
-  MarkerType
+  MarkerType,
 } from "reactflow";
 import "reactflow/dist/base.css";
 
 import "../tailwind.config.js";
 import Sidebar from "./component/sidebar";
 import Modal from "./component/Modal.js";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { toast } from 'react-toastify';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import TextNode from "./component/TextNode.js";
-
+import { fas } from "@fortawesome/free-solid-svg-icons";
 
 // Key for local storage
 const flowKey = "flow-key";
@@ -38,8 +38,6 @@ let id = 1;
 
 // Function for generating unique IDs for nodes
 const getId = () => `node_${id++}`;
-
-
 
 const App = () => {
   // Define custom node types
@@ -67,7 +65,6 @@ const App = () => {
     setIsModalOpen(false);
     setClickedNode(null);
   };
-
 
   // States and hooks setup
   const reactFlowWrapper = useRef(null);
@@ -97,8 +94,6 @@ const App = () => {
       setNodeName(""); // Clear nodeName when no node is selected
     }
   }, [nodeName, selectedElements, setNodes]);
-
-
 
   // Setup viewport
   const { setViewport } = useReactFlow();
@@ -132,13 +127,14 @@ const App = () => {
       const emptyTargetHandles = checkEmptyTargetHandles();
 
       if (nodes.length > 1 && (emptyTargetHandles > 1 || isNodeUnconnected())) {
-        alert(
+        toast.error(
           "Error: More than one node has an empty target handle or there are unconnected nodes."
         );
+        return;
       } else {
         const flow = reactFlowInstance.toObject();
         localStorage.setItem(flowKey, JSON.stringify(flow));
-        alert("Save successful!"); // Provide feedback when save is successful
+        toast.success("Flow Saved!");
       }
     }
   }, [reactFlowInstance, nodes, isNodeUnconnected]);
@@ -183,7 +179,6 @@ const App = () => {
     [setEdges]
   );
 
-
   // Enable drop effect on drag over
   const onDragOver = useCallback((event) => {
     event.preventDefault();
@@ -194,7 +189,6 @@ const App = () => {
 
   const onDrop = useCallback(
     (event) => {
-
       event.preventDefault();
 
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
@@ -229,25 +223,25 @@ const App = () => {
     try {
       // Format the data according to the specified format
       const formattedData = {
-        "organization_name": formDataObject.organizationForm.organizationName,
-        "site_name": formDataObject.siteInformationForm.siteName,
-        "site_type": formDataObject.siteInformationForm.siteType,
-        "site_region": formDataObject.siteInformationForm.siteRegion,
-        "hub_id": formDataObject.siteInformationForm.hubId,
-        "sal_code": formDataObject.networkLicensingForm.salCode,
-        "site_address": formDataObject.organizationForm.siteAddress,
-        "country": formDataObject.organizationForm.country,
-        "city": formDataObject.organizationForm.city,
-        "network_name": formDataObject.networkLicensingForm.networkName,
-        "site_tag": formDataObject.networkLicensingForm.siteTag,
-        "time_zone": formDataObject.siteInformationForm.timeZone,
-        "license_shared": formDataObject.networkLicensingForm.licenseShared
+        organization_name: formDataObject.organizationContent.organizationName,
+        site_name: formDataObject.siteInformationForm.siteName,
+        site_type: formDataObject.siteInformationForm.siteType,
+        site_region: formDataObject.siteInformationForm.siteRegion,
+        hub_id: formDataObject.siteInformationForm.hubId,
+        sal_code: formDataObject.networkLicensingForm.salCode,
+        site_address: formDataObject.organizationContent.siteAddress,
+        country: formDataObject.organizationContent.country,
+        city: formDataObject.organizationContent.city,
+        network_name: formDataObject.networkLicensingForm.networkName,
+        site_tag: formDataObject.networkLicensingForm.siteTag,
+        time_zone: formDataObject.siteInformationForm.timeZone,
+        license_shared: formDataObject.networkLicensingForm.licenseShared,
       };
 
-      const response = await fetch('http://localhost:8000/sites/', {
-        method: 'POST',
+      const response = await fetch("http://localhost:8000/sites/", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formattedData),
       });
@@ -260,62 +254,91 @@ const App = () => {
       const responseData = await response.json();
       return responseData;
     } catch (error) {
-      console.error('Error creating site:', error);
+      console.error("Error creating site:", error);
       throw error;
     }
   };
 
   const runFlow = () => {
-    // Create an object to store the form data
-    const formDataObject = {};
+    onSave();
 
-    // Retrieve the flow data from local storage
+    const formDataObject = {};
+    let allDataPresent = true;
     const flowData = JSON.parse(localStorage.getItem(flowKey));
 
-    // Check if flow data exists
     if (flowData && flowData.nodes) {
-      // Iterate through each node in the flow data
-      flowData.nodes.forEach(node => {
-        // Retrieve form values for the current node ID
+      flowData.nodes.forEach((node) => {
         const formDataKey = `${node.id}`;
         const formData = JSON.parse(localStorage.getItem(formDataKey));
 
-        // Check if formData exists
         if (formData) {
-          // Check the label of the node to determine the fields to extract
           switch (node.data.label) {
             case "orgnizationForm":
-              // Check for missing keys or empty values in formData
-              if (!formData["organizationName"] || !formData["country"] || !formData["city"] || !formData["siteAddress"] || formData["organizationName"].trim() === '' || formData["country"].trim() === '' || formData["city"].trim() === '' || formData["siteAddress"].trim() === '') {
+              if (
+                !formData["organizationName"] ||
+                !formData["country"] ||
+                !formData["city"] ||
+                !formData["siteAddress"] ||
+                formData["organizationName"].trim() === "" ||
+                formData["country"].trim() === "" ||
+                formData["city"].trim() === "" ||
+                formData["siteAddress"].trim() === ""
+              ) {
+                allDataPresent = false;
                 const missingFields = [];
-                if (!formData["organizationName"]) missingFields.push("organizationName");
+                if (!formData["organizationName"])
+                  missingFields.push("organizationName");
                 if (!formData["country"]) missingFields.push("country");
                 if (!formData["city"]) missingFields.push("city");
                 if (!formData["siteAddress"]) missingFields.push("siteAddress");
-                toast.error(`Missing or empty value(s) in organizationForm data: ${missingFields.join(", ")}.`);
-                return; // Exit the switch case early
+                console.error(
+                  `Missing or empty value(s) in organizationContent data for node ${
+                    node.type
+                  }: ${missingFields.join(", ")}.`
+                );
+                toast.error(
+                  `Missing or empty value(s) in organizationContent data for node ${
+                    node.type
+                  }: ${missingFields.join(", ")}.`
+                );
+                return;
               }
-              // Store form data for organizationForm
-              formDataObject.organizationForm = {
+              formDataObject.organizationContent = {
                 organizationName: formData["organizationName"],
                 country: formData["country"],
                 city: formData["city"],
-                siteAddress: formData["siteAddress"]
+                siteAddress: formData["siteAddress"],
               };
               break;
             case "siteInformationForm":
-              // Check for missing keys or empty values in formData
-              if (!formData["siteName"] || !formData["siteType"] || !formData["siteRegion"] || !formData["timeZone"] || formData["siteName"].trim() === '' || formData["siteType"].trim() === '' || formData["siteRegion"].trim() === '' || formData["timeZone"].trim() === '') {
+              if (
+                !formData["siteName"] ||
+                !formData["siteType"] ||
+                !formData["siteRegion"] ||
+                !formData["timeZone"] ||
+                formData["siteName"].trim() === "" ||
+                formData["siteType"].trim() === "" ||
+                formData["siteRegion"].trim() === "" ||
+                formData["timeZone"].trim() === ""
+              ) {
+                allDataPresent = false;
                 const missingFields = [];
                 if (!formData["siteName"]) missingFields.push("siteName");
                 if (!formData["siteType"]) missingFields.push("siteType");
                 if (!formData["siteRegion"]) missingFields.push("siteRegion");
                 if (!formData["timeZone"]) missingFields.push("timeZone");
-                if (!formData["hubId"]) missingFields.push("hubId");
-                toast.error(`Missing or empty value(s) in siteInformationForm data: ${missingFields.join(", ")}.`);
-                return; // Exit the switch case early
+                console.error(
+                  `Missing or empty value(s) in siteInformationForm data for node ${
+                    node.id
+                  }: ${missingFields.join(", ")}.`
+                );
+                toast.error(
+                  `Missing or empty value(s) in siteInformationForm data for node ${
+                    node.id
+                  }: ${missingFields.join(", ")}.`
+                );
+                return;
               }
-              // Store form data for siteInformationForm
               formDataObject.siteInformationForm = {
                 siteName: formData["siteName"],
                 siteType: formData["siteType"],
@@ -325,72 +348,91 @@ const App = () => {
               };
               break;
             default:
-              // Check for missing keys or empty values in formData
-              if (!formData["hubId"] || !formData["salCode"] || !formData["networkName"] || !formData["siteTag"] || !formData["licenseShared"] || formData["hubId"].trim() === '' || formData["salCode"].trim() === '' || formData["networkName"].trim() === '' || formData["siteTag"].trim() === '' || formData["licenseShared"].trim() === '') {
+              if (
+                !formData["salCode"] ||
+                !formData["networkName"] ||
+                !formData["siteTag"] ||
+                !formData["licenseShared"] ||
+                formData["salCode"].trim() === "" ||
+                formData["networkName"].trim() === "" ||
+                formData["siteTag"].trim() === "" ||
+                formData["licenseShared"].trim() === ""
+              ) {
+                allDataPresent = false;
                 const missingFields = [];
-                
+
                 if (!formData["salCode"]) missingFields.push("salCode");
                 if (!formData["networkName"]) missingFields.push("networkName");
                 if (!formData["siteTag"]) missingFields.push("siteTag");
-                if (!formData["licenseShared"]) missingFields.push("licenseShared");
-                toast.error(`Missing or empty value(s) in networkLicensingForm data: ${missingFields.join(", ")}.`);
-                return; // Exit the switch case early
+                if (!formData["licenseShared"])
+                  missingFields.push("licenseShared");
+                console.error(
+                  `Missing or empty value(s) in networkLicensingForm data for node ${
+                    node.id
+                  }: ${missingFields.join(", ")}.`
+                );
+                toast.error(
+                  `Missing or empty value(s) in networkLicensingForm data for node ${
+                    node.id
+                  }: ${missingFields.join(", ")}.`
+                );
+                return;
               }
-              // Store form data for default case
               formDataObject.networkLicensingForm = {
-                
                 salCode: formData["salCode"],
                 networkName: formData["networkName"],
                 siteTag: formData["siteTag"],
-                licenseShared: formData["licenseShared"]
+                licenseShared: formData["licenseShared"],
               };
               break;
           }
         } else {
-          console.log("No form data found for this node.");
+          allDataPresent = false;
+          console.log(node, "234123412");
+          console.error("Form data not found for node:", node.id);
+          toast.error(
+            `Form data not found for ${node.type}. Please try again later.`
+          );
+          return;
         }
       });
-      debugger;
-      // Call the createSite function with the formDataObject
-      createSite(formDataObject)
-        .then(data => {
-          console.log('Site created successfully:', data);
-          toast.success('Site created successfully.'); // Add success toast
-          // Handle success response here
-        })
-        .catch(error => {
-          console.error('Failed to create site:', error);
-          // Handle error here
-        });
 
+      if (allDataPresent) {
+        createSite(formDataObject)
+          .then((data) => {
+            console.log("Site created successfully:", data);
+            toast.success("Site created successfully.");
+          })
+          .catch((error) => {
+            console.error("Failed to create site:", error);
+            toast.error("Failed to create site. Please try again later.");
+            return;
+          });
+      }
     } else {
-      console.log("No flow data found in local storage.");
+      console.error("No flow data found in local storage.");
+      toast.error("No flow data found. Please try again later.");
+      return;
     }
   };
-
-
-
-
   const onEdgeUpdateStart = useCallback(() => {
-    console.log("Calle")
+    console.log("Calle");
     edgeUpdateSuccessful.current = false;
   }, []);
 
   const onEdgeUpdate = useCallback((oldEdge, newConnection) => {
-    console.log("Called")
+    console.log("Called");
     edgeUpdateSuccessful.current = true;
     setEdges((els) => updateEdge(oldEdge, newConnection, els));
   }, []);
 
   const onEdgeUpdateEnd = useCallback((_, edge) => {
-    console.log("Calleddd")
+    console.log("Calleddd");
     if (!edgeUpdateSuccessful.current) {
       setEdges((eds) => eds.filter((e) => e.id !== edge.id));
     }
     edgeUpdateSuccessful.current = true;
   }, []);
-
-
 
   const rfStyle = {
     backgroundColor: "#ffffff",
@@ -433,20 +475,20 @@ const App = () => {
               className=" m-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
               onClick={onSave}
             >
-              save flow
+              Save flow
             </button>
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
               onClick={onRestore}
             >
-              restore flow
+              Restore flow
             </button>
 
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
               onClick={onReset}
             >
-              Rest flow
+              Reset flow
             </button>
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
@@ -455,12 +497,13 @@ const App = () => {
               Run
             </button>
 
-            <hr>
-            </hr>
-
+            <hr></hr>
           </Panel>
         </ReactFlow>
-        <ToastContainer />
+        <ToastContainer
+          position="top-right"
+          toastStyle={{ marginLeft: "-100%", marginRight: "300px", marginTop: "10px" }}
+        />
       </div>
 
       <Sidebar
@@ -470,7 +513,6 @@ const App = () => {
         setSelectedElements={setSelectedElements}
       />
       <Modal isOpen={isModalOpen} onClose={closeModal} node={clickedNode} />
-
     </div>
   );
 };

@@ -12,7 +12,12 @@ const OrganizationForm = ({ nodeId }) => {
   useEffect(() => {
     const storedData = localStorage.getItem(nodeId);
     if (storedData) {
-      const { organizationName: storedOrganizationName, country: storedCountry, city: storedCity, siteAddress: storedSiteAddress } = JSON.parse(storedData);
+      const {
+        organizationName: storedOrganizationName,
+        country: storedCountry,
+        city: storedCity,
+        siteAddress: storedSiteAddress,
+      } = JSON.parse(storedData);
       setOrganizationName(storedOrganizationName);
       setCountry(storedCountry);
       setCity(storedCity);
@@ -58,24 +63,24 @@ const OrganizationForm = ({ nodeId }) => {
     <div className="dynamic-form">
       <div className="field">
         <label htmlFor="organizationName">Organization Name:</label>
-        <input
+        <select
           id="organizationName"
-          type="text"
           value={organizationName}
           onChange={handleOrganizationNameChange}
-          placeholder="Enter organization name"
-        />
+        >
+          <option value="">Select Organization</option>
+          <option value="OBS-LAB-GGN">OBS-LAB-GGN</option>
+          <option value="OBS_TEST_CUSTOMER">OBS_TEST_CUSTOMER</option>
+        </select>
       </div>
       <div className="field">
         <label htmlFor="country">Country:</label>
-        <select
-          id="country"
-          value={country}
-          onChange={handleCountryChange}
-        >
+        <select id="country" value={country} onChange={handleCountryChange}>
           <option value="">Select Country</option>
-          {countryList.map(country => (
-            <option key={country.code} value={country.name}>{country.name}</option>
+          {countryList.map((country) => (
+            <option key={country.code} value={country.name}>
+              {country.name}
+            </option>
           ))}
         </select>
       </div>

@@ -12,13 +12,16 @@
 
 label {
   display: inline-block;
-  width: 100px; /* Adjust as needed */
+  min-width: 300px;
   margin-right: 10px;
+  margin-bottom: 5px;
+  font-weight: bold;
 }
 
 input[type="text"],
 input[type="password"],
-select { /* Add select element styling */
+select {
+  /* Add select element styling */
   width: calc(100% - 110px); /* Adjust as needed */
   padding: 8px;
   margin-right: 10px;
@@ -27,7 +30,8 @@ select { /* Add select element styling */
 }
 
 input:focus,
-select:focus { /* Add select element focus styling */
+select:focus {
+  /* Add select element focus styling */
   outline: none;
   border-color: #007bff;
 }
