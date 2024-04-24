@@ -1,0 +1,92 @@
+{
+    "nodes": [
+        {
+            "width": 160,
+            "height": 56,
+            "id": "node_1",
+            "type": "orgnizationForm",
+            "position": {
+                "x": -34,
+                "y": 226.5
+            },
+            "data": {
+                "label": "orgnizationForm"
+            },
+            "className": "orgnizationForm",
+            "selected": false,
+            "positionAbsolute": {
+                "x": -34,
+                "y": 226.5
+            },
+            "dragging": false
+        },
+        {
+            "width": 160,
+            "height": 56,
+            "id": "node_2",
+            "type": "networkLicensingForm",
+            "position": {
+                "x": 203,
+                "y": 215.5
+            },
+            "data": {
+                "label": "networkLicensingForm"
+            },
+            "className": "networkLicensingForm",
+            "selected": false,
+            "positionAbsolute": {
+                "x": 203,
+                "y": 215.5
+            },
+            "dragging": false
+        },
+        {
+            "width": 160,
+            "height": 56,
+            "id": "node_3",
+            "type": "siteInformationForm",
+            "position": {
+                "x": 460.5,
+                "y": 240
+            },
+            "data": {
+                "label": "siteInformationForm"
+            },
+            "className": "siteInformationForm",
+            "selected": false,
+            "positionAbsolute": {
+                "x": 460.5,
+                "y": 240
+            }
+        }
+    ],
+    "edges": [
+        {
+            "source": "node_1",
+            "sourceHandle": "b",
+            "target": "node_2",
+            "targetHandle": "a",
+            "markerEnd": {
+                "type": "arrowclosed"
+            },
+            "animated": true,
+            "id": "reactflow__edge-node_1b-node_2a"
+        },
+        {
+            "source": "node_2",
+            "sourceHandle": "b",
+            "target": "node_3",
+            "targetHandle": "a",
+            "markerEnd": {
+                "type": "arrowclosed"
+            },
+            "animated": true,
+            "id": "reactflow__edge-node_2b-node_3a"
+        }
+    ],
+    "viewport": {
+        "x": 418.7102953030134,
+        "y": -59.26926045449699,
+        "zoom": 1.1486983549970349
+    }
+}

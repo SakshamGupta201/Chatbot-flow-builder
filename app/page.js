@@ -21,6 +21,7 @@ import ReactFlow, {
   MarkerType,
 } from "reactflow";
 import "reactflow/dist/base.css";
+import InitialData from  "./data/Initial.json"
 
 import "../tailwind.config.js";
 import Sidebar from "./component/sidebar";
@@ -31,6 +32,7 @@ import { toast } from "react-toastify";
 import TextNode from "./component/TextNode.js";
 import KeyInputModal from "./component/KeyInputModal.js";
 import SavedFlowKeysModal from "./component/SavedFlowKeysModal.js";
+import initialData from "./data/Initial.json";
 // Key for local storage
 const flowKey = "flow-key";
 
@@ -47,6 +49,13 @@ const orangeMinimapStyle = {
 
 
 const App = () => {
+
+
+  useEffect(() => {
+    localStorage.setItem(flowKey, JSON.stringify(initialData));
+    onRestore();
+  }, []);
+
   // Define custom node types
   const nodeTypes = useMemo(
     () => ({
@@ -85,7 +94,6 @@ const App = () => {
   const [savedFlows, setSavedFlows] = useState([]);
 
   const openSavedFlowsModal = useCallback(() => {
-    debugger;
     const flows = JSON.parse(localStorage.getItem("saved_flows"));
     if (flows) {
       const keys = Object.keys(flows);
@@ -203,6 +211,8 @@ const App = () => {
     restoreFlow();
   }, [setNodes, setViewport]);
 
+
+  
 
 
 
@@ -504,6 +514,12 @@ const App = () => {
   const rfStyle = {
     backgroundColor: "#ffffff",
   };
+
+  useEffect(() => {
+    
+    
+    onSave();
+  }, []);
 
   return (
     <div className="flex flex-row min-h-screen lg:flex-row">
