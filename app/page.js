@@ -85,6 +85,7 @@ const App = () => {
   const [savedFlows, setSavedFlows] = useState([]);
 
   const openSavedFlowsModal = useCallback(() => {
+    debugger;
     const flows = JSON.parse(localStorage.getItem("saved_flows"));
     if (flows) {
       const keys = Object.keys(flows);
@@ -202,8 +203,8 @@ const App = () => {
     restoreFlow();
   }, [setNodes, setViewport]);
 
-  
-  
+
+
 
 
 
@@ -546,9 +547,9 @@ const App = () => {
             </button>
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
-              onClick={onRestore}
+              onClick={openSavedFlowsModal}
             >
-              Restore flow
+              Restore Flows
             </button>
 
             <button
@@ -564,12 +565,7 @@ const App = () => {
               Run
             </button>
 
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
-              onClick={openSavedFlowsModal}
-            >
-              Show Saved Flows
-            </button>
+
 
             <hr></hr>
           </Panel>
@@ -592,7 +588,7 @@ const App = () => {
         onClose={() => setIsKeyInputModalOpen(false)}
         onSave={handleSave}
       />
-       <SavedFlowKeysModal
+      <SavedFlowKeysModal
         isOpen={savedFlowsModalOpen}
         onClose={closeSavedFlowsModal}
         savedFlows={savedFlows}

@@ -14,12 +14,12 @@ const SavedFlowKeysModal = ({ isOpen, onClose, savedFlows, restoreFlow }) => {
         <>
             {isOpen && (
                 <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-                    <div className="bg-white p-8 rounded-lg shadow-lg w-96">
+                    <div className="bg-white p-8 rounded-lg shadow-lg">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-lg font-semibold">Saved Flow Keys</h2>
                             <button
                                 onClick={onClose}
-                                className="text-gray-600 hover:text-gray-800 focus:outline-none"
+                                className="close-btn text-gray-600 hover:text-gray-800 focus:outline-none p-2 rounded-full transition duration-300"
                             >
                                 <svg
                                     className="h-6 w-6 fill-current"
@@ -33,20 +33,29 @@ const SavedFlowKeysModal = ({ isOpen, onClose, savedFlows, restoreFlow }) => {
                                 </svg>
                             </button>
                         </div>
-                        <ul>
-                            {savedFlows && savedFlows.map((key) => (
-                                <li key={key} className="mb-2 flex items-center">
-                                    <span>{key}</span>
-                                    <button
-                                        className="text-blue-500 hover:underline mr-2 focus:outline-none"
-                                        onClick={() => handleRestore(key)}
-                                        style={{ backgroundColor: '#4CAF50', color: 'white', padding: '10px 20px', borderRadius: '5px', cursor: 'pointer' }}
-                                    >
-                                        Restore
-                                    </button>
-                                </li>
-                            ))}
-                        </ul>
+                        <table className="table-auto w-full">
+                            <thead>
+                                <tr>
+                                    <th className="px-4 py-2">Flow Key</th>
+                                    <th className="px-4 py-2">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {savedFlows && savedFlows.map((key) => (
+                                    <tr key={key}>
+                                        <td className="border px-4 py-2">{key}</td>
+                                        <td className="border px-4 py-2">
+                                            <button
+                                                className="btn btn-primary cursor-pointer"
+                                                onClick={() => handleRestore(key)}
+                                            >
+                                                Restore
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             )}

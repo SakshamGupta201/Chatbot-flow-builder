@@ -14,7 +14,7 @@ function TextNode({ data, selected }) {
       formTitle = "Network Licensing Data";
       break;
     case "siteInformationForm":
-      formTitle = "Site Information Da";
+      formTitle = "Site Information Data";
       break;
     default:
       formTitle = "";
