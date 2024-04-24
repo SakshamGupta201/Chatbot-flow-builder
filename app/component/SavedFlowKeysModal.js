@@ -6,7 +6,7 @@ const SavedFlowKeysModal = ({ isOpen, onClose, savedFlows, restoreFlow }) => {
         const savedFlows = JSON.parse(localStorage.getItem("saved_flows")); // Parse the saved flows
         const flowData = savedFlows[key]; // Retrieve the flow data using the provided key
         localStorage.setItem('flow-key', JSON.stringify(flowData)); // Store the flow data with a new key
-        restoreFlow(); // Restore the flow using the retrieved data
+        restoreFlow(key); // Restore the flow using the retrieved data
         onClose();
     };
 
