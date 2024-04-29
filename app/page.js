@@ -91,6 +91,7 @@ const App = () => {
   const [savedFlows, setSavedFlows] = useState([]);
 
   const openSavedFlowsModal = useCallback(() => {
+
     const flows = JSON.parse(localStorage.getItem("saved_flows"));
     if (flows) {
       const keys = Object.keys(flows);
@@ -228,6 +229,7 @@ const App = () => {
 
   const savedFlowRestore = useCallback(
     (key) => {
+
       // Get the stored aggregated values using the provided key
       const storedData = JSON.parse(localStorage.getItem(key));
 
@@ -236,6 +238,16 @@ const App = () => {
         console.error(`No stored data found for key: ${key}`);
         return;
       }
+
+      const keys = Object.keys(localStorage);
+
+      // Iterate through keys and remove those that are not "saved_flows"
+      keys.forEach((key) => {
+        if (key !== "saved_flows" && !key.startsWith("Key") && !key.startsWith("Flow ")) {
+          localStorage.removeItem(key);
+        }
+      });
+
 
       // Iterate over the stored data and store each key-value pair in localStorage
       Object.entries(storedData).forEach(([nodeKey, nodeValue]) => {
@@ -258,7 +270,7 @@ const App = () => {
 
     // Iterate through keys and remove those that are not "saved_flows"
     keys.forEach((key) => {
-      if (key !== "saved_flows" && !key.startsWith("Key")) {
+      if (key !== "saved_flows" && !key.startsWith("Key") && !key.startsWith("Flow ")) {
         localStorage.removeItem(key);
       }
     });
@@ -420,13 +432,11 @@ const App = () => {
                 if (!formData["city"]) missingFields.push("city");
                 if (!formData["siteAddress"]) missingFields.push("siteAddress");
                 console.error(
-                  `Missing or empty value(s) in organizationContent data for node ${
-                    node.type
+                  `Missing or empty value(s) in organizationContent data for node ${node.type
                   }: ${missingFields.join(", ")}.`
                 );
                 toast.error(
-                  `Missing or empty value(s) in organizationContent data for node ${
-                    node.type
+                  `Missing or empty value(s) in organizationContent data for node ${node.type
                   }: ${missingFields.join(", ")}.`
                 );
                 return;
@@ -456,13 +466,11 @@ const App = () => {
                 if (!formData["siteRegion"]) missingFields.push("siteRegion");
                 if (!formData["timeZone"]) missingFields.push("timeZone");
                 console.error(
-                  `Missing or empty value(s) in siteInformationForm data for node ${
-                    node.id
+                  `Missing or empty value(s) in siteInformationForm data for node ${node.id
                   }: ${missingFields.join(", ")}.`
                 );
                 toast.error(
-                  `Missing or empty value(s) in siteInformationForm data for node ${
-                    node.id
+                  `Missing or empty value(s) in siteInformationForm data for node ${node.id
                   }: ${missingFields.join(", ")}.`
                 );
                 return;
@@ -495,13 +503,11 @@ const App = () => {
                 if (!formData["licenseShared"])
                   missingFields.push("licenseShared");
                 console.error(
-                  `Missing or empty value(s) in networkLicensingForm data for node ${
-                    node.id
+                  `Missing or empty value(s) in networkLicensingForm data for node ${node.id
                   }: ${missingFields.join(", ")}.`
                 );
                 toast.error(
-                  `Missing or empty value(s) in networkLicensingForm data for node ${
-                    node.id
+                  `Missing or empty value(s) in networkLicensingForm data for node ${node.id
                   }: ${missingFields.join(", ")}.`
                 );
                 return;

@@ -2,7 +2,7 @@ import React from "react";
 
 const SavedFlowKeysModal = ({ isOpen, onClose, savedFlows, restoreFlow }) => {
     const handleRestore = (key) => {
-        debugger;
+
         const savedFlows = JSON.parse(localStorage.getItem("saved_flows")); // Parse the saved flows
         const flowData = savedFlows[key]; // Retrieve the flow data using the provided key
         localStorage.setItem('flow-key', JSON.stringify(flowData)); // Store the flow data with a new key
