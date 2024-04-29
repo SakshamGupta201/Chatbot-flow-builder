@@ -21,7 +21,7 @@ import ReactFlow, {
   MarkerType,
 } from "reactflow";
 import "reactflow/dist/base.css";
-import InitialData from "./data/Initial.json"
+import InitialData from "./data/Initial.json";
 
 import "../tailwind.config.js";
 import Sidebar from "./component/sidebar";
@@ -42,15 +42,12 @@ let id = 4;
 const getId = () => `node_${id++}`;
 
 const orangeMinimapStyle = {
-  background: 'orange', // Change the background color to orange
-  border: '2px solid orange', // Change the border color to orange
-  borderRadius: '10px', // Optional: add some border radius for a rounded appearance
+  background: "", // Change the background color to orange
+  border: "2px solid orange", // Change the border color to orange
+  borderRadius: "10px", // Optional: add some border radius for a rounded appearance
 };
 
-
 const App = () => {
-
-
   useEffect(() => {
     localStorage.setItem(flowKey, JSON.stringify(initialData));
     onRestore();
@@ -159,7 +156,7 @@ const App = () => {
   // Save flow to local storage
 
   const [isKeyInputModalOpen, setIsKeyInputModalOpen] = useState(false);
-  const [keyInput, setKeyInput] = useState('');
+  const [keyInput, setKeyInput] = useState("");
 
   // Function to aggregate values of keys starting with "node_" in localStorage and store the result in localStorage under the specified key
   const aggregateNodeValuesAndStore = (resultKey) => {
@@ -167,7 +164,7 @@ const App = () => {
     const localStorageKeys = Object.keys(localStorage);
 
     // Filter keys starting with "node_"
-    const filteredKeys = localStorageKeys.filter(k => k.startsWith("node_"));
+    const filteredKeys = localStorageKeys.filter((k) => k.startsWith("node_"));
 
     // Aggregate values of filtered keys into an object
     const aggregatedValues = filteredKeys.reduce((acc, curr) => {
@@ -178,7 +175,6 @@ const App = () => {
     // Store the aggregated values in localStorage under the specified key
     localStorage.setItem(resultKey, JSON.stringify(aggregatedValues));
   };
-
 
   const handleSave = async (key) => {
     const savedFlowsKey = "saved_flows";
@@ -195,7 +191,7 @@ const App = () => {
 
         // Retrieve existing saved flows or initialize an empty object if it doesn't exist
         let savedFlows = JSON.parse(localStorage.getItem(savedFlowsKey));
-        if (!savedFlows || typeof savedFlows !== 'object') {
+        if (!savedFlows || typeof savedFlows !== "object") {
           savedFlows = {};
         }
 
@@ -214,10 +210,6 @@ const App = () => {
     }
   };
 
-
-
-
-
   // Restore flow from local storage
   const onRestore = useCallback(() => {
     const restoreFlow = async () => {
@@ -234,51 +226,42 @@ const App = () => {
     restoreFlow();
   }, [setNodes, setViewport]);
 
+  const savedFlowRestore = useCallback(
+    (key) => {
+      // Get the stored aggregated values using the provided key
+      const storedData = JSON.parse(localStorage.getItem(key));
 
+      if (!storedData || typeof storedData !== "object") {
+        // Handle case when no data is found for the provided key
+        console.error(`No stored data found for key: ${key}`);
+        return;
+      }
 
-  const savedFlowRestore = useCallback((key) => {
-    // Get the stored aggregated values using the provided key
-    const storedData = JSON.parse(localStorage.getItem(key));
+      // Iterate over the stored data and store each key-value pair in localStorage
+      Object.entries(storedData).forEach(([nodeKey, nodeValue]) => {
+        // Construct the storage key for the current node
+        const storageKey = `${nodeKey}`;
 
-    if (!storedData || typeof storedData !== 'object') {
-      // Handle case when no data is found for the provided key
-      console.error(`No stored data found for key: ${key}`);
-      return;
-    }
+        // Store the current node's value in localStorage
+        localStorage.setItem(storageKey, JSON.stringify(nodeValue));
+      });
 
-    // Iterate over the stored data and store each key-value pair in localStorage
-    Object.entries(storedData).forEach(([nodeKey, nodeValue]) => {
-      // Construct the storage key for the current node
-      const storageKey = `${nodeKey}`;
-
-      // Store the current node's value in localStorage
-      localStorage.setItem(storageKey, JSON.stringify(nodeValue));
-    });
-
-    // Perform additional restoration logic if needed
-    onRestore();
-  }, [setNodes, setViewport]);
-
-
-
-
-
-
-
+      // Perform additional restoration logic if needed
+      onRestore();
+    },
+    [setNodes, setViewport]
+  );
 
   const onReset = useCallback(() => {
     // Get all keys from localStorage
     const keys = Object.keys(localStorage);
 
     // Iterate through keys and remove those that are not "saved_flows"
-    keys.forEach(key => {
+    keys.forEach((key) => {
       if (key !== "saved_flows" && !key.startsWith("Key")) {
         localStorage.removeItem(key);
       }
-
     });
-
-
 
     // Reset nodes and edges
     setNodes([]);
@@ -286,7 +269,6 @@ const App = () => {
 
     localStorage.setItem(flowKey, JSON.stringify(initialData));
     onRestore();
-
   }, []);
 
   const onConnect = useCallback(
@@ -405,8 +387,6 @@ const App = () => {
     }
   }, [reactFlowInstance, nodes, isNodeUnconnected]);
 
-
-
   const runFlow = () => {
     onSave();
 
@@ -440,11 +420,13 @@ const App = () => {
                 if (!formData["city"]) missingFields.push("city");
                 if (!formData["siteAddress"]) missingFields.push("siteAddress");
                 console.error(
-                  `Missing or empty value(s) in organizationContent data for node ${node.type
+                  `Missing or empty value(s) in organizationContent data for node ${
+                    node.type
                   }: ${missingFields.join(", ")}.`
                 );
                 toast.error(
-                  `Missing or empty value(s) in organizationContent data for node ${node.type
+                  `Missing or empty value(s) in organizationContent data for node ${
+                    node.type
                   }: ${missingFields.join(", ")}.`
                 );
                 return;
@@ -474,11 +456,13 @@ const App = () => {
                 if (!formData["siteRegion"]) missingFields.push("siteRegion");
                 if (!formData["timeZone"]) missingFields.push("timeZone");
                 console.error(
-                  `Missing or empty value(s) in siteInformationForm data for node ${node.id
+                  `Missing or empty value(s) in siteInformationForm data for node ${
+                    node.id
                   }: ${missingFields.join(", ")}.`
                 );
                 toast.error(
-                  `Missing or empty value(s) in siteInformationForm data for node ${node.id
+                  `Missing or empty value(s) in siteInformationForm data for node ${
+                    node.id
                   }: ${missingFields.join(", ")}.`
                 );
                 return;
@@ -511,11 +495,13 @@ const App = () => {
                 if (!formData["licenseShared"])
                   missingFields.push("licenseShared");
                 console.error(
-                  `Missing or empty value(s) in networkLicensingForm data for node ${node.id
+                  `Missing or empty value(s) in networkLicensingForm data for node ${
+                    node.id
                   }: ${missingFields.join(", ")}.`
                 );
                 toast.error(
-                  `Missing or empty value(s) in networkLicensingForm data for node ${node.id
+                  `Missing or empty value(s) in networkLicensingForm data for node ${
+                    node.id
                   }: ${missingFields.join(", ")}.`
                 );
                 return;
@@ -644,14 +630,16 @@ const App = () => {
               Run
             </button>
 
-
-
             <hr></hr>
           </Panel>
         </ReactFlow>
         <ToastContainer
           position="top-right"
-          toastStyle={{ marginLeft: "-100%", marginRight: "300px", marginTop: "10px" }}
+          toastStyle={{
+            marginLeft: "-100%",
+            marginRight: "300px",
+            marginTop: "10px",
+          }}
         />
       </div>
 
