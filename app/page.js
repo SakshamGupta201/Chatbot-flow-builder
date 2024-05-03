@@ -21,8 +21,8 @@ import ReactFlow, {
   MarkerType,
 } from "reactflow";
 import "reactflow/dist/base.css";
-import InitialData from "./data/Initial.json";
-
+import Header from "./Header";
+import Footer from "./Footer";
 import "../tailwind.config.js";
 import Sidebar from "./component/sidebar";
 import Modal from "./component/Modal.js";
@@ -33,6 +33,9 @@ import TextNode from "./component/TextNode.js";
 import KeyInputModal from "./component/KeyInputModal.js";
 import SavedFlowKeysModal from "./component/SavedFlowKeysModal.js";
 import initialData from "./data/Initial.json";
+import "./page.css";
+import { FaPlay } from 'react-icons/fa';
+import Accordion from "./Accordion";
 // Key for local storage
 const flowKey = "flow-key";
 
@@ -589,97 +592,104 @@ const App = () => {
   }, []);
 
   return (
-    <div className="flex flex-row min-h-screen lg:flex-row">
-      <div className="flex-grow h-screen" ref={reactFlowWrapper}>
-        <ReactFlow
-          nodes={nodes}
-          nodeTypes={nodeTypes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onEdgeUpdate={onEdgeUpdate}
-          onEdgeUpdateStart={onEdgeUpdateStart}
-          onEdgeUpdateEnd={onEdgeUpdateEnd}
-          onConnect={onConnect}
-          onInit={setReactFlowInstance}
-          onDrop={onDrop}
-          onDragOver={onDragOver}
-          style={rfStyle}
-          onNodeClick={handleNodeClick}
-          onPaneClick={() => {
-            setSelectedElements([]);
-            setNodes((nodes) =>
-              nodes.map((n) => ({
-                ...n,
-                selected: false,
-              }))
-            );
-          }}
-          fitView
-        >
-          <Background variant="dots" gap={12} size={1} />
-          <Controls />
-          {/* <MiniMap  /> */}
-          <MiniMap zoomable pannable style={orangeMinimapStyle} />
-          <Panel>
-            <button
-              className=" m-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
-              onClick={() => setIsKeyInputModalOpen(true)}
-            >
-              Save flow
-            </button>
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
-              onClick={openSavedFlowsModal}
-            >
-              Restore Flows
-            </button>
+    <>
+      <Header /> {/* Place your header component here */}
+      <div className="flex flex-row lg:flex-row">
+        <Sidebar
+          nodeName={nodeName}
+          setNodeName={setNodeName}
+          selectedNode={selectedElements[0]}
+          setSelectedElements={setSelectedElements}
+        />
 
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
-              onClick={onReset}
-            >
-              Reset flow
-            </button>
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
-              onClick={runFlow}
-            >
-              Run
-            </button>
+        <div className="flex-grow" ref={reactFlowWrapper}>
+          <ReactFlow
+            nodes={nodes}
+            nodeTypes={nodeTypes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onEdgeUpdate={onEdgeUpdate}
+            onEdgeUpdateStart={onEdgeUpdateStart}
+            onEdgeUpdateEnd={onEdgeUpdateEnd}
+            onConnect={onConnect}
+            onInit={setReactFlowInstance}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            style={rfStyle}
+            onNodeClick={handleNodeClick}
+            onPaneClick={() => {
+              setSelectedElements([]);
+              setNodes((nodes) =>
+                nodes.map((n) => ({
+                  ...n,
+                  selected: false,
+                }))
+              );
+            }}
+            fitView
+          >
+            <Background variant="dots" gap={12} size={1} />
+            <Controls />
+            {/* <MiniMap  /> */}
+            <MiniMap zoomable pannable style={orangeMinimapStyle} />
+            <Panel>
+              <button
+                className=" m-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
+                onClick={() => setIsKeyInputModalOpen(true)}
+              >
+                Save flow
+              </button>
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
+                onClick={openSavedFlowsModal}
+              >
+                Restore Flows
+              </button>
 
-            <hr></hr>
-          </Panel>
-        </ReactFlow>
-        <ToastContainer
-          position="top-right"
-          toastStyle={{
-            marginLeft: "-100%",
-            marginRight: "300px",
-            marginTop: "10px",
-          }}
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
+                onClick={onReset}
+              >
+                Reset flow
+              </button>
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
+                onClick={runFlow}
+              >
+                <FaPlay className="m-2" /> {/* Icon */}
+                
+              </button>
+
+              <hr></hr>
+            </Panel>
+          </ReactFlow>
+          <ToastContainer
+            position="top-right"
+            toastStyle={{
+              marginLeft: "-100%",
+              marginRight: "300px",
+              marginTop: "10px",
+            }}
+          />
+        </div>
+
+        <Modal isOpen={isModalOpen} onClose={closeModal} node={clickedNode} />
+        <KeyInputModal
+          isOpen={isKeyInputModalOpen}
+          onClose={() => setIsKeyInputModalOpen(false)}
+          onSave={handleSave}
+        />
+        <SavedFlowKeysModal
+          isOpen={savedFlowsModalOpen}
+          onClose={closeSavedFlowsModal}
+          savedFlows={savedFlows}
+          restoreFlow={(key) => savedFlowRestore(key)}
         />
       </div>
-
-      <Sidebar
-        nodeName={nodeName}
-        setNodeName={setNodeName}
-        selectedNode={selectedElements[0]}
-        setSelectedElements={setSelectedElements}
-      />
-      <Modal isOpen={isModalOpen} onClose={closeModal} node={clickedNode} />
-      <KeyInputModal
-        isOpen={isKeyInputModalOpen}
-        onClose={() => setIsKeyInputModalOpen(false)}
-        onSave={handleSave}
-      />
-      <SavedFlowKeysModal
-        isOpen={savedFlowsModalOpen}
-        onClose={closeSavedFlowsModal}
-        savedFlows={savedFlows}
-        restoreFlow={(key) => savedFlowRestore(key)}
-      />
-    </div>
+      <Accordion/>
+      <Footer /> {/* Place your footer component here */}
+    </>
   );
 };
 
