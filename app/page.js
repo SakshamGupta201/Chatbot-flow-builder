@@ -560,7 +560,7 @@ const App = () => {
   return (
     <>
       <Header /> {/* Place your header component here */}
-      <div className="flex flex-row lg:flex-row">
+      <div className="flex flex-col lg:flex-row h-screen lg:max-h-screen lg:h-auto max-h-75.67vh">
         <Sidebar
           nodeName={nodeName}
           setNodeName={setNodeName}

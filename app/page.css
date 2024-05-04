@@ -1,13 +1,13 @@
-.h-screen{
-    max-height:86.5vh;
+.h-screen {
+    max-height: 75.67vh;
 }
 
-.react-flow__panel{
+.react-flow__panel {
     position: absolute;
     z-index: 5;
     margin: 15px;
     justify-content: center;
     align-content: center;
     display: flex;
-  
+
 }
