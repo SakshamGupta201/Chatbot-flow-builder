@@ -62,30 +62,29 @@ export default function Sidebar({
             Site Information
           </div>
           <div
-            className="bg-white mb-2 p-3 border-2 border-orange-500 rounded cursor-move flex justify-center items-center text-orange-500 hover:bg-orange-500 hover:text-white transition-colors duration-200"
+            className="bg-white mb-2 p-3 border-2 border-gray-500 rounded  flex justify-center items-center text-gray-500 hover:bg-gray-500 hover:text-white transition-colors duration-200"
             onDragStart={(event) => onDragStart(event, "siteInformationForm")}
-            draggable
           >
             Add New Organization
           </div>
           <div
-            className="bg-white mb-2 p-3 border-2 border-orange-500 rounded cursor-move flex justify-center items-center text-orange-500 hover:bg-orange-500 hover:text-white transition-colors duration-200"
+            className="bg-white mb-2 p-3 border-2 border-gray-500 rounded  flex justify-center items-center text-gray-500 hover:bg-gray-500 hover:text-white transition-colors duration-200"
             onDragStart={(event) => onDragStart(event, "siteInformationForm")}
-            draggable
+            disabled // Add the disabled attribute here
           >
             Configure Organization
           </div>
           <div
-            className="bg-white mb-2 p-3 border-2 border-orange-500 rounded cursor-move flex justify-center items-center text-orange-500 hover:bg-orange-500 hover:text-white transition-colors duration-200"
+            className="bg-white mb-2 p-3 border-2 border-gray-500 rounded  flex justify-center items-center text-gray-500 hover:bg-gray-500 hover:text-white transition-colors duration-200"
             onDragStart={(event) => onDragStart(event, "siteInformationForm")}
-            draggable
+            disabled // Add the disabled attribute here
           >
             Add User
           </div>
           <div
-            className="bg-white mb-2 p-3 border-2 border-orange-500 rounded cursor-move flex justify-center items-center text-orange-500 hover:bg-orange-500 hover:text-white transition-colors duration-200"
+            className="bg-white mb-2 p-3 border-2 border-gray-500 rounded  flex justify-center items-center text-gray-500 hover:bg-gray-500 hover:text-white transition-colors duration-200"
             onDragStart={(event) => onDragStart(event, "siteInformationForm")}
-            draggable
+            disabled // Add the disabled attribute here
           >
             Download LLD
           </div>
