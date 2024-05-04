@@ -3,9 +3,8 @@ import { Handle, Position } from "reactflow";
 
 //custome node
 function TextNode({ data, selected }) {
-
   let formTitle;
- 
+
   switch (data.label) {
     case "orgnizationForm":
       formTitle = "Organization Data";
@@ -22,17 +21,17 @@ function TextNode({ data, selected }) {
 
   return (
     <div
-      className={`w-40  shadow-md rounded-md bg-white   ${selected ? "border-solid border-2 border-indigo-500/100" : ""
-        } `}
+      className={`w-40  shadow-md rounded-md bg-white   ${
+        selected ? "border-solid border-2 border-indigo-500/100" : ""
+      } `}
     >
       <div className="flex flex-col">
-        <div className="max-h-max px-2 py-1 text-left text-black text-xs font-bold rounded-t-md bg-teal-300">
+        <div className="max-h-max px-2 py-1 text-left text-black text-xs font-bold rounded-t-md bg-orange-300">
           Controls
         </div>
+
         <div className="px-3 py-2 ">
-          <div className="text-xs font-normal text-black">
-            {formTitle}
-          </div>
+          <div className="text-xs font-normal text-black">{formTitle}</div>
         </div>
       </div>
 

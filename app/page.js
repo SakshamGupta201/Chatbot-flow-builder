@@ -601,27 +601,43 @@ const App = () => {
             <MiniMap zoomable pannable style={orangeMinimapStyle} />
             <Panel>
               <button
-                className=" m-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
+                className="m-2 bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
                 onClick={() => setIsKeyInputModalOpen(true)}
+                style={{
+                  backgroundColor: "#ff7900",
+                  transition: "background-color 0.3s",
+                }}
               >
                 Save flow
               </button>
               <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
+                className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
                 onClick={openSavedFlowsModal}
+                style={{
+                  backgroundColor: "#ff7900",
+                  transition: "background-color 0.3s",
+                }}
               >
                 Restore Flows
               </button>
 
               <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
+                className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
                 onClick={onReset}
+                style={{
+                  backgroundColor: "#ff7900",
+                  transition: "background-color 0.3s",
+                }}
               >
                 Reset flow
               </button>
               <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
+                className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded mx-2 my-2"
                 onClick={runFlow}
+                style={{
+                  backgroundColor: "#ff7900",
+                  transition: "background-color 0.3s",
+                }}
               >
                 <FaPlay className="m-2" /> {/* Icon */}
               </button>
