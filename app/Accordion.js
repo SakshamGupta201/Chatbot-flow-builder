@@ -1,32 +1,35 @@
-import React, { useState } from 'react';
-import { FaChevronRight, FaChevronDown } from 'react-icons/fa'; // Import the arrow icons
+// Accordion.js
 
-const Accordion = () => {
-  const [isOpen, setIsOpen] = useState(false);
+import React from "react";
+import { FaChevronRight, FaChevronDown } from "react-icons/fa"; // Import the arrow icons
 
-  const toggleAccordion = () => {
-    setIsOpen(!isOpen);
-  };
-
+const Accordion = ({ messages, isOpen, toggleAccordion }) => {
   return (
-    <div className="accordion bg-white p-4">
-      <div className="flex items-center justify-between cursor-pointer" onClick={toggleAccordion}>
-        <span className="text-lg font-semibold">Accordion</span>
-        {isOpen ? <FaChevronDown className="ml-2" /> : <FaChevronRight className="ml-2" />} {/* Use arrow icons */}
+    <div className="bg-white p-4 rounded-lg shadow-md">
+      <div
+        className="flex items-center justify-between cursor-pointer"
+        onClick={toggleAccordion}
+      >
+        <span className="text-lg font-semibold">Flow Phases</span>
+        {isOpen ? (
+          <FaChevronDown className="ml-2" />
+        ) : (
+          <FaChevronRight className="ml-2" />
+        )}
       </div>
       {isOpen && (
-        <div className="accordion-content mt-2">
-          <p>
-            {/* Your accordion content */}
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
-            facilisi. Vestibulum ante ipsum primis in faucibus orci luctus et
-            ultrices posuere cubilia curae; Donec velit neque, auctor sit amet
-            aliquam vel, ullamcorper sit amet ligula. Donec rutrum congue leo
-            eget malesuada. Vivamus magna justo, lacinia eget consectetur sed,
-            convallis at tellus. Praesent sapien massa, convallis a pellentesque
-            nec, egestas non nisi. Donec sollicitudin molestie malesuada.
-            Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus.
-          </p>
+        <div className="mt-2">
+          <ul>
+            {/* Render messages as list items */}
+            {messages.map((message, index) => (
+              <li key={index} className="flex items-center mb-2">
+                <span className="bg-blue-500 text-white rounded-full px-3 py-1 text-sm mr-2">
+                  Phase {index + 1}
+                </span>
+                <span>{message}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>
