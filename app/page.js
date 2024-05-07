@@ -38,6 +38,7 @@ import { FaPlay } from "react-icons/fa";
 import Accordion from "./Accordion";
 // Key for local storage
 const flowKey = "flow-key";
+import "./style.css";
 
 let id = 4;
 
@@ -197,9 +198,6 @@ const App = () => {
       const emptyTargetHandles = checkEmptyTargetHandles();
 
       if (nodes.length > 1 && (emptyTargetHandles > 1 || isNodeUnconnected())) {
-        toast.error(
-          "Error: More than one node has an empty target handle or there are unconnected nodes."
-        );
         return;
       } else {
         const flow = reactFlowInstance.toObject();
@@ -219,8 +217,6 @@ const App = () => {
         onSave();
 
         aggregateNodeValuesAndStore(key);
-
-        toast.success("Flow saved!");
       }
     }
   };
@@ -369,9 +365,6 @@ const App = () => {
       const emptyTargetHandles = checkEmptyTargetHandles();
 
       if (nodes.length > 1 && (emptyTargetHandles > 1 || isNodeUnconnected())) {
-        toast.error(
-          "Error: More than one node has an empty target handle or there are unconnected nodes."
-        );
         return;
       } else {
         const flow = reactFlowInstance.toObject();
@@ -379,6 +372,46 @@ const App = () => {
       }
     }
   }, [reactFlowInstance, nodes, isNodeUnconnected]);
+
+  const createSite = async (formDataObject) => {
+    try {
+      // Format the data according to the specified format
+      const formattedData = {
+        organization_name: formDataObject.organizationContent.organizationName,
+        site_name: formDataObject.siteInformationForm.siteName,
+        site_type: formDataObject.siteInformationForm.siteType,
+        site_region: formDataObject.siteInformationForm.siteRegion,
+        hub_id: formDataObject.siteInformationForm.hubId,
+        sal_code: formDataObject.networkLicensingForm.salCode,
+        site_address: formDataObject.organizationContent.siteAddress,
+        country: formDataObject.organizationContent.country,
+        city: formDataObject.organizationContent.city,
+        network_name: formDataObject.networkLicensingForm.networkName,
+        site_tag: formDataObject.networkLicensingForm.siteTag,
+        time_zone: formDataObject.siteInformationForm.timeZone,
+        license_shared: formDataObject.networkLicensingForm.licenseShared,
+      };
+
+      const response = await fetch("http://localhost:8000/sites/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formattedData),
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Failed to create site: ${errorMessage}`);
+      }
+
+      const responseData = await response.json();
+      return responseData;
+    } catch (error) {
+      console.error("Error creating site:", error);
+      throw error;
+    }
+  };
 
   const runFlow = () => {
     // Clear existing messages
@@ -419,8 +452,7 @@ const App = () => {
                 const errorMessage = `Missing or empty value(s) in organization content: ${missingFields.join(
                   ", "
                 )}.`;
-                console.error(errorMessage);
-                toast.error(errorMessage);
+
                 addMessage(`Phase: ${node.data.label} failed: ${errorMessage}`);
               } else {
                 formDataObject.organizationContent = {
@@ -429,7 +461,7 @@ const App = () => {
                   city: formData["city"],
                   siteAddress: formData["siteAddress"],
                 };
-                addMessage(`Phase: ${node.data.label} completed successfully`);
+                addMessage(`Organization Phase: ${node.data.label} completed successfully`);
               }
               break;
             case "siteInformationForm":
@@ -452,9 +484,8 @@ const App = () => {
                 const errorMessage = `Missing or empty value(s) in site information: ${missingFields.join(
                   ", "
                 )}.`;
-                console.error(errorMessage);
-                toast.error(errorMessage);
-                addMessage(`Phase: ${node.data.label} failed: ${errorMessage}`);
+
+                addMessage(`SiteInformation Phase: ${node.data.label} failed: ${errorMessage}`);
               } else {
                 formDataObject.siteInformationForm = {
                   siteName: formData["siteName"],
@@ -463,7 +494,7 @@ const App = () => {
                   timeZone: formData["timeZone"],
                   hubId: formData["hubId"],
                 };
-                addMessage(`Phase: ${node.data.label} completed successfully`);
+                addMessage(`SiteInformation Phase: ${node.data.label} completed successfully`);
               }
               break;
             default:
@@ -490,8 +521,8 @@ const App = () => {
                   ", "
                 )}.`;
                 console.error(errorMessage);
-                toast.error(errorMessage);
-                addMessage(`Phase: ${node.data.label} failed: ${errorMessage}`);
+
+                addMessage(`Network Phase: ${node.data.label} failed: ${errorMessage}`);
               } else {
                 formDataObject.networkLicensingForm = {
                   salCode: formData["salCode"],
@@ -499,7 +530,7 @@ const App = () => {
                   siteTag: formData["siteTag"],
                   licenseShared: formData["licenseShared"],
                 };
-                addMessage(`Phase: ${node.data.label} completed successfully`);
+                addMessage(`Network Phase: ${node.data.label} completed successfully`);
               }
               break;
           }
@@ -507,8 +538,7 @@ const App = () => {
           allDataPresent = false;
           console.error(node, "234123412");
           const errorMessage = `Form data not found for ${node.data.label}. Please try again later.`;
-          console.error(errorMessage);
-          toast.error(errorMessage);
+
           addMessage(`Phase: ${node.data.label} failed: ${errorMessage}`);
         }
         // Open the accordion when flow is completed
@@ -516,17 +546,21 @@ const App = () => {
       });
 
       if (allDataPresent) {
-        toast.success("Flow completed successfully.");
-        addMessage("Flow completed successfully.");
-      } else {
-        toast.error("Flow failed.");
-        addMessage("Flow failed.");
+        createSite(formDataObject)
+          .then((data) => {
+            console.log("Site created successfully:", data);
+            addMessage("Site created successfully.");
+          })
+          .catch((error) => {
+            console.error("Failed to create site:", error);
+            addMessage("Failed to create site. Please try again later.");
+            return;
+          });
       }
     } else {
-      const errorMessage = "No flow data found. Please try again later.";
-      console.error(errorMessage);
-      toast.error(errorMessage);
-      addMessage(errorMessage);
+      console.error("No flow data found in local storage.");
+      addMessage("No flow data found. Please try again later.");
+      return;
     }
   };
 
@@ -559,7 +593,6 @@ const App = () => {
 
   return (
     <>
-      <Header /> {/* Place your header component here */}
       <div className="flex flex-col lg:flex-row h-screen lg:max-h-screen lg:h-auto max-h-75.67vh">
         <Sidebar
           nodeName={nodeName}
@@ -618,7 +651,7 @@ const App = () => {
                   transition: "background-color 0.3s",
                 }}
               >
-                Restore Flows
+                Load FLows
               </button>
 
               <button
@@ -673,7 +706,6 @@ const App = () => {
         isOpen={isAccordionOpen}
         toggleAccordion={toggleAccordion}
       />
-      <Footer /> {/* Place your footer component here */}
     </>
   );
 };
