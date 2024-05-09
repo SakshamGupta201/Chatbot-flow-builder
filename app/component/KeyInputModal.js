@@ -18,7 +18,7 @@ const KeyInputModal = ({ isOpen, onClose, onSave }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay">
+    <div className="modal-overlay">=
       <div className="modal">
         <div className="modal-header">
           <h2>Enter Key</h2>
@@ -34,8 +34,8 @@ const KeyInputModal = ({ isOpen, onClose, onSave }) => {
             onChange={handleInputChange}
             placeholder="Enter the key to store the flow"
           />
-          <button className="mx-2 btn btn-primary" onClick={handleSave}>Save</button>
-          <button className="mx-2 btn btn-primary" onClick={onClose}>Close</button>
+          <button className="mx-2 btn btn-primary bg-orange-500" onClick={handleSave}>Save</button>
+          <button className="mx-2 btn btn-primary bg-orange-500" onClick={onClose}>Close</button>
           {/* Add additional action buttons if needed */}
         </div>
       </div>

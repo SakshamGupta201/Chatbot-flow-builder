@@ -70,7 +70,7 @@ const Modal = ({ isOpen, onClose, node }) => {
         <div className="modal-body">
           {renderForm}
           <div className="modal-actions">
-            <button className="btn btn-primary" onClick={handleClose}>
+            <button className="btn btn-primary bg-orange-500" onClick={handleClose}>
               Close
             </button>
             {/* Add additional action buttons if needed */}

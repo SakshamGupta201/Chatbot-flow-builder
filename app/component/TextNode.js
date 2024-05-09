@@ -26,7 +26,7 @@ function TextNode({ data, selected }) {
       } `}
     >
       <div className="flex flex-col">
-        <div className="max-h-max px-2 py-1 text-left text-black text-xs font-bold rounded-t-md bg-orange-300">
+        <div className="max-h-max px-2 py-1 text-left text-black text-xs font-bold rounded-t-md bg-orange-500">
           Controls
         </div>
 

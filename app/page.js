@@ -651,7 +651,7 @@ const App = () => {
                   transition: "background-color 0.3s",
                 }}
               >
-                Load FLows
+                Load Flows
               </button>
 
               <button
