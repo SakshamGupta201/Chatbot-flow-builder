@@ -593,7 +593,8 @@ const App = () => {
 
   return (
     <>
-      <div className="flex flex-col lg:flex-row h-screen lg:max-h-screen lg:h-auto max-h-75.67vh">
+     <Header />
+      <div className="flex flex-col lg:flex-row h-screen lg:max-h-screen lg:h-auto max-h-75vh">
         <Sidebar
           nodeName={nodeName}
           setNodeName={setNodeName}
@@ -706,6 +707,7 @@ const App = () => {
         isOpen={isAccordionOpen}
         toggleAccordion={toggleAccordion}
       />
+      <Footer /> 
     </>
   );
 };

@@ -5,7 +5,7 @@ import { FaChevronRight, FaChevronDown } from "react-icons/fa"; // Import the ar
 
 const Accordion = ({ messages, isOpen, toggleAccordion }) => {
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md">
+    <div className="bg-white p-4 rounded-sm shadow-md">
       <div
         className="flex items-center justify-between cursor-pointer"
         onClick={toggleAccordion}

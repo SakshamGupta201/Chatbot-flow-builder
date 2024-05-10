@@ -62,7 +62,7 @@ export default function Sidebar({
             Site Information
           </div>
           <div
-            className="bg-orange-500 mb-2 p-3 border-2 border-gray-500 rounded  flex justify-center items-center text-white hover:bg-gray-500 hover:text-white transition-colors duration-200"
+            className="bg-gray-500 mb-2 p-3 border-2 border-gray-500 rounded  flex justify-center items-center text-white hover:bg-gray-500 hover:text-white transition-colors duration-200"
             onDragStart={(event) => onDragStart(event, "siteInformationForm")}
           >
             Add New Organization
