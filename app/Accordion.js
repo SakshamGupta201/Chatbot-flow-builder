@@ -23,7 +23,7 @@ const Accordion = ({ messages, isOpen, toggleAccordion }) => {
             {/* Render messages as list items */}
             {messages.map((message, index) => (
               <li key={index} className="flex items-center mb-2">
-                <span className="bg-orange-500 text-white rounded-full px-3 py-1 text-sm mr-2">
+                <span className="bg-orange-500 text-white  rounded-full px-3 py-1 text-sm mr-2">
                   Phase {index + 1}
                 </span>
                 <span>{message}</span>

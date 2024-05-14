@@ -44,7 +44,7 @@ const Modal = ({ isOpen, onClose, node }) => {
 
   if (!isOpen || !node) return null;
   let formTitle;
- 
+
   switch (node.type) {
     case "orgnizationForm":
       formTitle = "Organization Data Form";
@@ -62,7 +62,7 @@ const Modal = ({ isOpen, onClose, node }) => {
     <div className="modal-overlay">
       <div className="modal">
         <div className="modal-header">
-        <h2 className="modal-title">{formTitle} :</h2>
+          <h2 className="modal-title">{formTitle} :</h2>
           <button className="close-btn" onClick={handleClose}>
             &times;
           </button>
@@ -70,7 +70,10 @@ const Modal = ({ isOpen, onClose, node }) => {
         <div className="modal-body">
           {renderForm}
           <div className="modal-actions">
-            <button className="btn btn-primary bg-orange-500" onClick={handleClose}>
+            <button
+              className="btn btn-primary bg-orange-500"
+              onClick={handleClose}
+            >
               Close
             </button>
             {/* Add additional action buttons if needed */}

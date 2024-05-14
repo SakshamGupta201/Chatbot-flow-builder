@@ -58,7 +58,9 @@ const DynamicForm = ({ nodeId }) => {
           </button>
         </div>
       ))}
-      <button className="add" onClick={handleAddField}>Add Field</button>
+      <button className="add" onClick={handleAddField}>
+        Add Field
+      </button>
     </div>
   );
 };

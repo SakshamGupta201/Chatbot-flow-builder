@@ -39,7 +39,9 @@ export default function Sidebar({
       ) : (
         //node panel
         <>
-          <h3 className="text-xl mb-4 text-orange-500 font-bold">Control Panel</h3>
+          <h3 className="text-xl mb-4 text-orange-500 font-bold">
+            Control Panel
+          </h3>
           <div
             className="bg-orange-500 mb-2 p-3 border-2 border-orange-500 rounded cursor-move flex justify-center items-center text-white hover:bg-orange-600 transition-colors duration-200"
             onDragStart={(event) => onDragStart(event, "orgnizationForm")}
@@ -91,6 +93,5 @@ export default function Sidebar({
         </>
       )}
     </aside>
-
   );
 }
