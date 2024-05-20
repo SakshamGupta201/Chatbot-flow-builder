@@ -50,7 +50,7 @@ const SavedFlowKeysModal = ({ isOpen, onClose, savedFlows, restoreFlow }) => {
                         <td className="border px-4 py-2">{cleanKey}</td>
                         <td className="border px-4 py-2">
                           <button
-                            className="btn btn-primary cursor-pointer"
+                            className="btn bg-bg-orange-500 btn-primary cursor-pointer"
                             onClick={() => handleRestore(key)}
                           >
                             Restore

@@ -16,7 +16,7 @@ const Header = () => {
       </div>
       <div className="flex-grow"></div>{" "}
       {/* Empty div to push the text to the center */}
-      <h1 className="text-2xl text-orange-500 font-bold">DND Workflow</h1>
+      <h1 className="text-2xl text-orange-500 font-bold ml-[-200px]">DND Workflow</h1>
       <div className="flex-grow"></div>{" "}
       {/* Another empty div for equal spacing */}
     </header>

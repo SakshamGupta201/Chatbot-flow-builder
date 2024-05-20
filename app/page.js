@@ -369,6 +369,7 @@ const App = () => {
       } else {
         const flow = reactFlowInstance.toObject();
         localStorage.setItem(flowKey, JSON.stringify(flow));
+        toast.success('Flow Saved successfully.');
       }
     }
   }, [reactFlowInstance, nodes, isNodeUnconnected]);
@@ -461,7 +462,9 @@ const App = () => {
                   city: formData["city"],
                   siteAddress: formData["siteAddress"],
                 };
-                addMessage(`Organization Phase: ${node.data.label} completed successfully`);
+                addMessage(
+                  `Organization Phase: ${node.data.label} completed successfully`
+                );
               }
               break;
             case "siteInformationForm":
@@ -485,7 +488,9 @@ const App = () => {
                   ", "
                 )}.`;
 
-                addMessage(`SiteInformation Phase: ${node.data.label} failed: ${errorMessage}`);
+                addMessage(
+                  `SiteInformation Phase: ${node.data.label} failed: ${errorMessage}`
+                );
               } else {
                 formDataObject.siteInformationForm = {
                   siteName: formData["siteName"],
@@ -494,7 +499,9 @@ const App = () => {
                   timeZone: formData["timeZone"],
                   hubId: formData["hubId"],
                 };
-                addMessage(`SiteInformation Phase: ${node.data.label} completed successfully`);
+                addMessage(
+                  `SiteInformation Phase: ${node.data.label} completed successfully`
+                );
               }
               break;
             default:
@@ -522,7 +529,9 @@ const App = () => {
                 )}.`;
                 console.error(errorMessage);
 
-                addMessage(`Network Phase: ${node.data.label} failed: ${errorMessage}`);
+                addMessage(
+                  `Network Phase: ${node.data.label} failed: ${errorMessage}`
+                );
               } else {
                 formDataObject.networkLicensingForm = {
                   salCode: formData["salCode"],
@@ -530,7 +539,9 @@ const App = () => {
                   siteTag: formData["siteTag"],
                   licenseShared: formData["licenseShared"],
                 };
-                addMessage(`Network Phase: ${node.data.label} completed successfully`);
+                addMessage(
+                  `Network Phase: ${node.data.label} completed successfully`
+                );
               }
               break;
           }
@@ -593,7 +604,7 @@ const App = () => {
 
   return (
     <>
-     <Header />
+      <Header />
       <div className="flex flex-col lg:flex-row h-screen lg:max-h-screen lg:h-auto max-h-75vh">
         <Sidebar
           nodeName={nodeName}
@@ -682,9 +693,9 @@ const App = () => {
           <ToastContainer
             position="top-right"
             toastStyle={{
-              marginLeft: "-100%",
-              marginRight: "300px",
-              marginTop: "10px",
+              marginLeft: "-100px",
+              marginRight: "20px",
+              marginTop: "60px",
             }}
           />
         </div>
@@ -707,7 +718,7 @@ const App = () => {
         isOpen={isAccordionOpen}
         toggleAccordion={toggleAccordion}
       />
-      <Footer /> 
+      <Footer />
     </>
   );
 };
